@@ -15,6 +15,8 @@ export interface ChatResponseDTO {
   reply: string
   leadDetected?: boolean
   suggestedAction?: 'open_hire_modal' | 'view_skills' | 'view_saas'
+  remainingMessages?: number
+  sessionLimitReached?: boolean
 }
 
 export interface ValidatedChatRequestDTO {
@@ -44,8 +46,8 @@ export function validateChatRequest(body: unknown): { valid: boolean; error?: st
     return { valid: false, error: 'Last message content is empty' }
   }
 
-  if (lastMsg.content.length > 2000) {
-    return { valid: false, error: 'Message content exceeds maximum allowed length of 2000 characters' }
+  if (lastMsg.content.length > 600) {
+    return { valid: false, error: 'Message content exceeds maximum allowed length of 600 characters' }
   }
 
   return {
@@ -53,7 +55,7 @@ export function validateChatRequest(body: unknown): { valid: boolean; error?: st
     data: {
       sessionId: payload.sessionId || crypto.randomUUID(),
       visitorHash: payload.visitorHash,
-      messages: payload.messages.slice(-10), // Keep last 10 messages for context budget
+      messages: payload.messages.slice(-8), // Keep last 8 messages for context budget
       language: payload.language === 'es' ? 'es' : 'en',
     },
   }

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Send, Bot, ChevronDown, RefreshCw } from 'lucide-react'
+import { Send, Bot, ChevronDown, RefreshCw, Sparkles } from 'lucide-react'
 import type { Language } from '../types/client.types'
 import { useAIChat } from '../hooks/useAIChat'
 
@@ -15,7 +15,7 @@ export function AIChatWidget({ lang, visitorHash, onOpenHireModal }: AIChatWidge
   const [isOpen, setIsOpen] = useState(false)
   const [inputText, setInputText] = useState('')
 
-  const { messages, isLoading, error, sendMessage, clearChat } = useAIChat(
+  const { messages, isLoading, error, remainingMessages, sessionLimitReached, sendMessage, clearChat } = useAIChat(
     visitorHash,
     lang,
     onOpenHireModal
@@ -43,7 +43,7 @@ export function AIChatWidget({ lang, visitorHash, onOpenHireModal }: AIChatWidge
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!inputText.trim()) return
+    if (!inputText.trim() || sessionLimitReached) return
     sendMessage(inputText)
     setInputText('')
   }
@@ -56,7 +56,7 @@ export function AIChatWidget({ lang, visitorHash, onOpenHireModal }: AIChatWidge
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="w-[92vw] sm:w-96 h-[500px] bg-cyber-surface border border-cyber-border rounded-2xl shadow-2xl flex flex-col overflow-hidden mb-3"
+            className="w-[92vw] sm:w-96 h-[510px] bg-cyber-surface border border-cyber-border rounded-2xl shadow-2xl flex flex-col overflow-hidden mb-3"
           >
             {/* Header */}
             <div className="bg-cyber-card px-4 py-3 border-b border-cyber-border flex items-center justify-between">
@@ -69,7 +69,13 @@ export function AIChatWidget({ lang, visitorHash, onOpenHireModal }: AIChatWidge
                     <span>Alejandro AI Agent</span>
                     <span className="w-1.5 h-1.5 rounded-full bg-cyber-emerald" />
                   </div>
-                  <div className="text-[10px] text-cyber-muted font-mono">Gemini Flash Lite • Edge</div>
+                  <div className="text-[10px] text-cyber-muted font-mono flex items-center gap-1.5">
+                    <span>Edge AI</span>
+                    <span>•</span>
+                    <span className={remainingMessages <= 3 ? 'text-amber-400 font-bold' : 'text-cyber-muted'}>
+                      {remainingMessages}/15 {isEs ? 'mensajes' : 'msgs left'}
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -77,7 +83,7 @@ export function AIChatWidget({ lang, visitorHash, onOpenHireModal }: AIChatWidge
                 <button
                   type="button"
                   onClick={clearChat}
-                  title="Clear chat"
+                  title={isEs ? 'Reiniciar sesión' : 'Reset chat'}
                   className="p-1.5 rounded-lg text-cyber-muted hover:text-white transition-colors"
                 >
                   <RefreshCw size={13} />
@@ -121,7 +127,7 @@ export function AIChatWidget({ lang, visitorHash, onOpenHireModal }: AIChatWidge
               )}
 
               {error && (
-                <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-[11px]">
+                <div className="p-2.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-[11px]">
                   {error}
                 </div>
               )}
@@ -130,7 +136,7 @@ export function AIChatWidget({ lang, visitorHash, onOpenHireModal }: AIChatWidge
             </div>
 
             {/* Quick Questions */}
-            {messages.length <= 2 && (
+            {messages.length <= 2 && !sessionLimitReached && (
               <div className="px-3 py-2 bg-cyber-bg/50 border-t border-cyber-border/60 flex flex-col gap-1">
                 <span className="text-[10px] text-cyber-muted font-mono uppercase tracking-wider">
                   {isEs ? 'Preguntas sugeridas:' : 'Suggested questions:'}
@@ -148,23 +154,49 @@ export function AIChatWidget({ lang, visitorHash, onOpenHireModal }: AIChatWidge
               </div>
             )}
 
-            {/* Input Form */}
-            <form onSubmit={handleSubmit} className="p-3 bg-cyber-card border-t border-cyber-border flex items-center gap-2">
-              <input
-                type="text"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                placeholder={isEs ? 'Pregunta sobre Alejandro o contrátalo...' : 'Ask about Alejandro or his rates...'}
-                className="flex-1 bg-cyber-bg border border-cyber-border rounded-xl px-3 py-2 text-xs text-cyber-text focus:outline-none focus:border-cyber-primary"
-              />
-              <button
-                type="submit"
-                disabled={isLoading || !inputText.trim()}
-                className="p-2 rounded-xl bg-cyber-primary text-cyber-bg disabled:opacity-50 hover:bg-cyan-300 transition-colors shrink-0"
-              >
-                <Send size={14} />
-              </button>
-            </form>
+            {/* Session Limit Banner or Input Form */}
+            {sessionLimitReached ? (
+              <div className="p-3 bg-cyber-card border-t border-cyber-border text-center">
+                <p className="text-[11px] text-cyber-muted mb-2">
+                  {isEs
+                    ? 'Límite de sesión alcanzado. Conecta directamente con Alejandro:'
+                    : 'Session limit reached. Connect directly with Alejandro:'}
+                </p>
+                <button
+                  type="button"
+                  onClick={onOpenHireModal}
+                  className="w-full py-2 px-4 rounded-xl bg-gradient-to-r from-cyber-primary to-cyan-400 text-cyber-bg font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-cyan-300 transition-all"
+                >
+                  <Sparkles size={14} />
+                  <span>{isEs ? 'Abrir Formulario de Contacto Directo' : 'Open Direct Contact Form'}</span>
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="p-3 bg-cyber-card border-t border-cyber-border">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={inputText}
+                    maxLength={600}
+                    onChange={(e) => setInputText(e.target.value)}
+                    placeholder={isEs ? 'Pregunta sobre Alejandro o cotiza...' : 'Ask about Alejandro or his rates...'}
+                    className="flex-1 bg-cyber-bg border border-cyber-border rounded-xl px-3 py-2 text-xs text-cyber-text focus:outline-none focus:border-cyber-primary"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isLoading || !inputText.trim()}
+                    className="p-2 rounded-xl bg-cyber-primary text-cyber-bg disabled:opacity-50 hover:bg-cyan-300 transition-colors shrink-0"
+                  >
+                    <Send size={14} />
+                  </button>
+                </div>
+                {inputText.length > 450 && (
+                  <div className="text-[10px] text-right text-cyber-muted mt-1 font-mono">
+                    {inputText.length}/600
+                  </div>
+                )}
+              </form>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

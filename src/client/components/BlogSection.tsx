@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { BookOpen, ArrowRight, X } from 'lucide-react'
+import { marked } from 'marked'
 import type { Language } from '../types/client.types'
 import type { BlogPostDTO } from '../../server/dto/blog.dto'
 
@@ -13,6 +14,11 @@ export function BlogSection({ lang }: BlogSectionProps) {
   const [posts, setPosts] = useState<BlogPostDTO[]>([])
   const [activePost, setActivePost] = useState<BlogPostDTO | null>(null)
   const [loading, setLoading] = useState(true)
+
+  const renderedContent = useMemo(() => {
+    if (!activePost?.contentMarkdown) return ''
+    return marked.parse(activePost.contentMarkdown, { gfm: true, breaks: true }) as string
+  }, [activePost?.contentMarkdown])
 
   useEffect(() => {
     fetch('/api/blog')
@@ -123,9 +129,10 @@ export function BlogSection({ lang }: BlogSectionProps) {
 
               <h2 className="text-2xl font-bold text-white mb-4 pr-6 leading-tight">{activePost.title}</h2>
 
-              <div className="prose prose-invert prose-sm max-w-none text-cyber-text leading-relaxed whitespace-pre-wrap font-sans">
-                {activePost.contentMarkdown}
-              </div>
+              <div
+                className="blog-content leading-relaxed text-cyber-text font-sans"
+                dangerouslySetInnerHTML={{ __html: renderedContent }}
+              />
             </motion.div>
           </div>
         )}

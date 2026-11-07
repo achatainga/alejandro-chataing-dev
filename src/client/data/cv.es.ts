@@ -87,6 +87,14 @@ export const cvSpanish: CVData = {
       highlight: true,
     },
     {
+      name: 'Bedrock CLI',
+      description:
+        'Herramienta CLI universal para DevOps y gestión avanzada de proyectos Roots Bedrock WordPress. Incorpora clonado automático de staging/producción en 1-clic con ingress Auto-SSL, streaming de base de datos remoto vía SSH con verificación criptográfica, proxy transparente de medios (zero-disk), enlaces simbólicos NTFS/POSIX y diagnósticos del sistema (`bedrock doctor`).',
+      tech: ['PHP 8.3', 'Symfony Console', 'Docker', 'SSH Streaming', 'Roots Bedrock', 'Nginx TLS'],
+      url: 'https://github.com/achatainga/bedrock-cli',
+      highlight: true,
+    },
+    {
       name: 'Edge AI Orchestrator',
       description:
         'Plataforma multi-inquilino en Cloudflare Workers con Durable Objects, base de datos D1 e integración de WhatsApp Evolution API para orquestar agentes de citas y atención empresarial.',

@@ -19,8 +19,8 @@ export function Footer({ lang, onOpenAdmin, onOpenHireModal }: FooterProps) {
           </div>
           <p className="text-[11px] text-cyber-muted max-w-sm mb-3">
             {isEs
-              ? 'Sistemas de alta concurrencia, cirugía AST y agentes de IA en el edge.'
-              : 'High-concurrency systems, AST surgery, and edge AI agents.'}
+              ? 'Desarrollo Full-Stack, APIs en la nube y soluciones prácticas con IA.'
+              : 'Senior Full-Stack Engineering, cloud APIs, and practical AI solutions.'}
           </p>
           <button
             type="button"

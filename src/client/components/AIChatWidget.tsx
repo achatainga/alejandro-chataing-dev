@@ -75,23 +75,21 @@ export function AIChatWidget({ lang, visitorHash, onOpenHireModal }: AIChatWidge
                     <span>Edge AI</span>
                     <span>•</span>
                     <span className={remainingMessages <= 3 ? 'text-amber-400 font-bold' : 'text-cyber-muted'}>
-                      {remainingMessages}/10 {isEs ? 'mensajes' : 'msgs left'}
+                      {remainingMessages}/15 {isEs ? 'mensajes' : 'msgs left'}
                     </span>
                   </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-1">
-                {!isLocked && (
-                  <button
-                    type="button"
-                    onClick={clearChat}
-                    title={isEs ? 'Reiniciar sesión' : 'Reset chat'}
-                    className="p-1.5 rounded-lg text-cyber-muted hover:text-white transition-colors"
-                  >
-                    <RefreshCw size={13} />
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={clearChat}
+                  title={isEs ? 'Reiniciar sesión' : 'Reset chat'}
+                  className="p-1.5 rounded-lg text-cyber-muted hover:text-white transition-colors"
+                >
+                  <RefreshCw size={13} />
+                </button>
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}

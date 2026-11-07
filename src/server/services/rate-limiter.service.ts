@@ -7,11 +7,11 @@ export class RateLimiterService {
   // In-memory sliding window for ultra-fast burst protection (per edge isolate)
   private static burstStore = new Map<string, BurstWindow>()
 
-  public static readonly BURST_MAX = 4 // max 4 messages per 60s per IP
+  public static readonly BURST_MAX = 6 // max 6 messages per 60s per IP
   private static readonly BURST_WINDOW_MS = 60 * 1000 // 60s
-  public static readonly SESSION_MAX = 10 // max 10 messages per chat session
-  public static readonly DAILY_VISITOR_MAX = 20 // max 20 messages per 24h per visitor
-  public static readonly DAILY_IP_MAX = 20 // max 20 messages per 24h per IP address
+  public static readonly SESSION_MAX = 15 // max 15 messages per chat session
+  public static readonly DAILY_VISITOR_MAX = 60 // max 60 messages per 24h per visitor
+  public static readonly DAILY_IP_MAX = 60 // max 60 messages per 24h per IP address
 
   /**
    * Hashes a client IP using SHA-256 for privacy-preserving persistent rate-limiting.

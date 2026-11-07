@@ -8,8 +8,8 @@ export interface ChatMessage {
   timestamp: number
 }
 
-const DEFAULT_SESSION_BUDGET = 10
-const COOLDOWN_MS = 2500
+const DEFAULT_SESSION_BUDGET = 15
+const COOLDOWN_MS = 2000
 
 export function useAIChat(visitorHash: string, lang: Language, onTriggerHireModal?: () => void) {
   const [messages, setMessages] = useState<ChatMessage[]>(() => [
@@ -83,8 +83,8 @@ export function useAIChat(visitorHash: string, lang: Language, onTriggerHireModa
       if (sessionLimitReached || remainingMessages <= 0) {
         setError(
           lang === 'es'
-            ? 'Límite de 10 mensajes alcanzado. Para coordinar tu proyecto, contacta a Alejandro directamente.'
-            : '10-message session limit reached. Please contact Alejandro directly for project inquiries.'
+            ? 'Límite de mensajes alcanzado. Para coordinar tu proyecto, contacta a Alejandro directamente.'
+            : 'Session message limit reached. Please contact Alejandro directly for project inquiries.'
         )
         if (onTriggerHireModal) onTriggerHireModal()
         return
@@ -102,11 +102,15 @@ export function useAIChat(visitorHash: string, lang: Language, onTriggerHireModa
       setError(null)
 
       try {
+        const adminSecret =
+          typeof window !== 'undefined' ? localStorage.getItem('alejandro_admin_secret') : undefined
+
         const payload = {
           sessionId,
           visitorHash,
           language: lang,
           _hp: '', // Honeypot trap (must remain empty)
+          adminSecret: adminSecret || undefined,
           messages: [...messages, userMsg].map((m) => ({
             role: m.role,
             content: m.content,
@@ -115,7 +119,10 @@ export function useAIChat(visitorHash: string, lang: Language, onTriggerHireModa
 
         const res = await fetch('/api/chat', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            ...(adminSecret ? { 'x-admin-secret': adminSecret } : {}),
+          },
           body: JSON.stringify(payload),
         })
 
@@ -135,9 +142,12 @@ export function useAIChat(visitorHash: string, lang: Language, onTriggerHireModa
           }
           setMessages((prev) => [...prev, alertMsg])
           setError(errMsg)
-          setSessionLimitReached(true)
-          if (errData?.suggestedAction === 'open_hire_modal' && onTriggerHireModal) {
-            onTriggerHireModal()
+
+          // Only lock out permanently if daily or session budget was explicitly exhausted
+          if (errData?.suggestedAction === 'open_hire_modal') {
+            setSessionLimitReached(true)
+            setRemainingMessages(0)
+            if (onTriggerHireModal) onTriggerHireModal()
           }
           return
         }
@@ -193,16 +203,14 @@ export function useAIChat(visitorHash: string, lang: Language, onTriggerHireModa
   )
 
   const clearChat = () => {
-    // If rate limit was reached on server, keep limit in place
-    if (sessionLimitReached || remainingMessages <= 0) {
-      if (onTriggerHireModal) onTriggerHireModal()
-      return
-    }
-
     const newId = crypto.randomUUID()
     setSessionId(newId)
+    setRemainingMessages(DEFAULT_SESSION_BUDGET)
+    setSessionLimitReached(false)
+    setError(null)
     if (typeof window !== 'undefined') {
       sessionStorage.setItem('alejandro_chat_session_id', newId)
+      sessionStorage.removeItem('alejandro_chat_remaining')
     }
     setMessages([
       {

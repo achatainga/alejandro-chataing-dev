@@ -9,6 +9,7 @@ export interface ChatRequestDTO {
   messages: ChatMessageDTO[]
   language?: 'en' | 'es'
   _hp?: string // Honeypot field (must remain empty)
+  adminSecret?: string
 }
 
 export interface ChatResponseDTO {
@@ -25,6 +26,7 @@ export interface ValidatedChatRequestDTO {
   visitorHash: string
   messages: ChatMessageDTO[]
   language: 'en' | 'es'
+  adminSecret?: string
 }
 
 export function validateChatRequest(body: unknown): { valid: boolean; error?: string; data?: ValidatedChatRequestDTO } {
@@ -94,6 +96,7 @@ export function validateChatRequest(body: unknown): { valid: boolean; error?: st
       visitorHash: payload.visitorHash.slice(0, 64),
       messages: budgetedMessages,
       language: payload.language === 'es' ? 'es' : 'en',
+      adminSecret: typeof payload.adminSecret === 'string' ? payload.adminSecret : undefined,
     },
   }
 }

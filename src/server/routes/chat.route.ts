@@ -56,71 +56,81 @@ chatRoute.post('/', async (c) => {
     const clientIp = c.req.header('cf-connecting-ip') || c.req.header('x-real-ip') || 'unknown-ip'
     const ipHash = await RateLimiterService.hashIp(clientIp)
 
-    // 3. Ultra-Fast In-Memory Burst Rate Check (Max 4 msgs per 60s per IP)
-    const burst = RateLimiterService.checkBurst(clientIp)
-    if (!burst.allowed) {
-      c.header('Retry-After', String(burst.retryAfterSeconds || 15))
-      return c.json(
-        {
-          success: false,
-          error:
-            language === 'es'
-              ? `Estás enviando mensajes demasiado rápido. Por favor espera ${burst.retryAfterSeconds}s antes de reintentar.`
-              : `You are sending messages too quickly. Please wait ${burst.retryAfterSeconds}s before retrying.`,
-        },
-        429
-      )
-    }
+    // Admin Whitelist Bypass (allows Alejandro to test his own bot without limit)
+    const adminSecret = c.req.header('x-admin-secret') || validation.data.adminSecret
+    const isAdmin = Boolean(
+      adminSecret && c.env.ADMIN_SECRET && adminSecret.trim() === c.env.ADMIN_SECRET.trim()
+    )
 
-    // 4. Persistent D1 Daily IP Cap (Max 20 msgs per 24h per IP address)
-    const dailyIpCount = await RateLimiterService.getDailyIpCount(c.env.DB, ipHash)
-    if (dailyIpCount >= RateLimiterService.DAILY_IP_MAX) {
-      return c.json(
-        {
-          success: false,
-          error:
-            language === 'es'
-              ? 'Has alcanzado el límite diario de demostración para tu conexión (20 mensajes/día). Alejandro está disponible directamente para evaluar tu proyecto.'
-              : 'You have reached the daily demonstration limit for your connection (20 messages/day). Alejandro is available directly to discuss your project.',
+    let currentSessionCount = 0
+
+    if (!isAdmin) {
+      // 3. Ultra-Fast In-Memory Burst Rate Check (Max 6 msgs per 60s per IP)
+      const burst = RateLimiterService.checkBurst(clientIp)
+      if (!burst.allowed) {
+        c.header('Retry-After', String(burst.retryAfterSeconds || 15))
+        return c.json(
+          {
+            success: false,
+            error:
+              language === 'es'
+                ? `Estás enviando mensajes demasiado rápido. Por favor espera ${burst.retryAfterSeconds}s antes de reintentar.`
+                : `You are sending messages too quickly. Please wait ${burst.retryAfterSeconds}s before retrying.`,
+          },
+          429
+        )
+      }
+
+      // 4. Persistent D1 Daily IP Cap (Max 60 msgs per 24h per IP address)
+      const dailyIpCount = await RateLimiterService.getDailyIpCount(c.env.DB, ipHash)
+      if (dailyIpCount >= RateLimiterService.DAILY_IP_MAX) {
+        return c.json(
+          {
+            success: false,
+            error:
+              language === 'es'
+                ? 'Has alcanzado el límite diario de demostración para tu conexión (60 mensajes/día). Alejandro está disponible directamente para evaluar tu proyecto.'
+                : 'You have reached the daily demonstration limit for your connection (60 messages/day). Alejandro is available directly to discuss your project.',
+            suggestedAction: 'open_hire_modal',
+          },
+          429
+        )
+      }
+
+      // 5. Persistent D1 Daily Visitor Cap (Max 60 msgs per 24h per visitor hash)
+      const dailyVisitorCount = await RateLimiterService.getDailyVisitorCount(c.env.DB, visitorHash)
+      if (dailyVisitorCount >= RateLimiterService.DAILY_VISITOR_MAX) {
+        return c.json(
+          {
+            success: false,
+            error:
+              language === 'es'
+                ? 'Has alcanzado el límite diario de demostración (60 mensajes/día). Para continuar o cotizar tu proyecto, contacta a Alejandro directamente vía WhatsApp o Correo.'
+                : 'You have reached the daily demonstration limit (60 messages/day). To continue or request a proposal, please contact Alejandro directly via WhatsApp or Email.',
+            suggestedAction: 'open_hire_modal',
+          },
+          429
+        )
+      }
+
+      // 6. Session Message Budget Check (Max 15 msgs per session)
+      currentSessionCount = await RateLimiterService.getSessionMessageCount(c.env.DB, sessionId)
+      if (currentSessionCount >= RateLimiterService.SESSION_MAX) {
+        const cutoffReply =
+          language === 'es'
+            ? 'Has alcanzado el límite de 15 mensajes automáticos para esta sesión de demostración. Para avanzar en tu proyecto o coordinar una propuesta técnica detallada, Alejandro está disponible directamente por WhatsApp o Correo. ¿Deseas abrir el formulario de contacto directo?'
+            : "You've reached the 15-message demonstration limit for this session. To discuss your project requirements or receive a formal architecture proposal, Alejandro is available directly via WhatsApp or Email. Would you like to connect right away?"
+
+        return c.json({
+          success: true,
+          sessionId,
+          reply: cutoffReply,
+          leadDetected: true,
           suggestedAction: 'open_hire_modal',
-        },
-        429
-      )
-    }
-
-    // 5. Persistent D1 Daily Visitor Cap (Max 20 msgs per 24h per visitor hash)
-    const dailyVisitorCount = await RateLimiterService.getDailyVisitorCount(c.env.DB, visitorHash)
-    if (dailyVisitorCount >= RateLimiterService.DAILY_VISITOR_MAX) {
-      return c.json(
-        {
-          success: false,
-          error:
-            language === 'es'
-              ? 'Has alcanzado el límite diario de demostración (20 mensajes/día). Para continuar o cotizar tu proyecto, contacta a Alejandro directamente vía WhatsApp o Correo.'
-              : 'You have reached the daily demonstration limit (20 messages/day). To continue or request a proposal, please contact Alejandro directly via WhatsApp or Email.',
-          suggestedAction: 'open_hire_modal',
-        },
-        429
-      )
-    }
-
-    // 6. Session Message Budget Check (Max 10 msgs per session)
-    const currentSessionCount = await RateLimiterService.getSessionMessageCount(c.env.DB, sessionId)
-    if (currentSessionCount >= RateLimiterService.SESSION_MAX) {
-      const cutoffReply =
-        language === 'es'
-          ? 'Has alcanzado el límite de 10 mensajes automáticos para esta sesión de demostración. Para avanzar en tu proyecto o coordinar una propuesta técnica detallada, Alejandro está disponible directamente por WhatsApp o Correo. ¿Deseas abrir el formulario de contacto directo?'
-          : "You've reached the 10-message demonstration limit for this session. To discuss your project requirements or receive a formal architecture proposal, Alejandro is available directly via WhatsApp or Email. Would you like to connect right away?"
-
-      return c.json({
-        success: true,
-        sessionId,
-        reply: cutoffReply,
-        leadDetected: true,
-        suggestedAction: 'open_hire_modal',
-        remainingMessages: 0,
-        sessionLimitReached: true,
-      })
+          remainingMessages: 0,
+          sessionLimitReached: true,
+        })
+      }
     }
 
     // 7. Cloudflare Geo, Device & Audit Metadata

@@ -5,11 +5,20 @@ export interface GeminiServiceConfig {
   modelName?: string
 }
 
+const CANDIDATE_MODELS = [
+  'gemini-flash-lite-latest',
+  'gemini-3.1-flash-lite',
+  'gemini-3.5-flash-lite',
+  'gemini-3-flash-preview',
+  'gemini-flash-latest',
+  'gemini-3.8-flash',
+]
+
 export class GeminiService {
-  private model: string
+  private primaryModel: string
 
   constructor(private config: GeminiServiceConfig) {
-    this.model = config.modelName || 'gemini-3.8-flash'
+    this.primaryModel = config.modelName || 'gemini-flash-lite-latest'
   }
 
   private buildSystemInstruction(language: 'en' | 'es'): string {
@@ -67,7 +76,10 @@ KEY RULES:
   }
 
   async generateReply(messages: ChatMessageDTO[], language: 'en' | 'es'): Promise<string> {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent?key=${this.config.apiKey}`
+    const modelsToTry = [
+      this.primaryModel,
+      ...CANDIDATE_MODELS.filter((m) => m !== this.primaryModel),
+    ]
 
     const systemInstruction = this.buildSystemInstruction(language)
 
@@ -88,19 +100,39 @@ KEY RULES:
       },
     }
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    })
+    let lastError: Error | null = null
 
-    if (!response.ok) {
-      const errText = await response.text()
-      throw new Error(`Gemini API error (HTTP ${response.status}): ${errText}`)
+    for (const model of modelsToTry) {
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${this.config.apiKey}`
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+          signal: AbortSignal.timeout(6000),
+        })
+
+        if (!response.ok) {
+          const errText = await response.text()
+          console.warn(`[GeminiService] Model ${model} returned HTTP ${response.status}: ${errText}`)
+          lastError = new Error(`HTTP ${response.status}: ${errText}`)
+          continue
+        }
+
+        const json: any = await response.json()
+        const text = json.candidates?.[0]?.content?.parts?.[0]?.text || ''
+        if (text.trim().length > 0) {
+          return text.trim()
+        }
+      } catch (err: any) {
+        console.warn(`[GeminiService] Error with model ${model}: ${err.message}`)
+        lastError = err
+      }
     }
 
-    const json: any = await response.json()
-    const text = json.candidates?.[0]?.content?.parts?.[0]?.text || ''
-    return text.trim()
+    console.error('[GeminiService] All candidate models exhausted:', lastError?.message)
+    return language === 'es'
+      ? '¡Hola! Alejandro Chataing es Senior Full-Stack Engineer y Lead de Sistemas de IA. Para revisar tu proyecto o agendar una llamada directa, conversemos de inmediato:\n__OPEN_HIRE_MODAL__'
+      : "Hello! Alejandro Chataing is a Senior Full-Stack Engineer & AI Systems Lead. To discuss your project or schedule a call, let's connect right away:\n__OPEN_HIRE_MODAL__"
   }
 }

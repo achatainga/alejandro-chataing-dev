@@ -34,7 +34,7 @@ chatRoute.post('/', async (c) => {
     if (apiKey) {
       const gemini = new GeminiService({
         apiKey,
-        modelName: c.env.GEMINI_MODEL || 'gemini-3.8-flash',
+        modelName: c.env.GEMINI_MODEL || 'gemini-flash-lite-latest',
       })
       rawReply = await gemini.generateReply(messages, language || 'en')
     } else {

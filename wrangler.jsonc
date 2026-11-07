@@ -15,7 +15,7 @@
   ],
   "vars": {
     "ENVIRONMENT": "production",
-    "GEMINI_MODEL": "gemini-3.8-flash",
+    "GEMINI_MODEL": "gemini-flash-lite-latest",
     "GEMINI_API_KEY": "REDACTED_GEMINI_KEY",
     "NOTIFICATION_PHONE": "+584241668876",
     "EVOLUTION_API_URL": "https://evolution-api-latest-jkic.onrender.com",

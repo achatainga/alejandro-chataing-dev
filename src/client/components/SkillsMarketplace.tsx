@@ -13,6 +13,7 @@ export function SkillsMarketplace({ lang }: SkillsMarketplaceProps) {
   const isEs = lang === 'es'
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [copiedPromptId, setCopiedPromptId] = useState<string | null>(null)
 
   const categories = [
     { id: 'all', label: isEs ? 'Todos los Skills (13)' : 'All Skills (13)' },
@@ -38,6 +39,22 @@ export function SkillsMarketplace({ lang }: SkillsMarketplaceProps) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ downloadType: 'npm_cli' }),
     }).catch(() => {})
+  }
+
+  const handleCopyPrompt = async (skill: SkillItem) => {
+    try {
+      const res = await fetch(`/api/skills/${skill.id}/raw`)
+      const text = await res.text()
+      navigator.clipboard.writeText(text)
+      setCopiedPromptId(skill.id)
+      setTimeout(() => setCopiedPromptId(null), 2500)
+
+      fetch(`/api/skills/${skill.id}/download`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ downloadType: 'copy_prompt' }),
+      }).catch(() => {})
+    } catch (_) {}
   }
 
   return (
@@ -151,19 +168,39 @@ export function SkillsMarketplace({ lang }: SkillsMarketplaceProps) {
                     </button>
                   </div>
 
-                  {/* Links */}
-                  <div className="flex items-center justify-between text-[11px] text-cyber-muted">
-                    <a
-                      href={`/skills/${skill.id}.md`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="hover:text-cyber-primary transition-colors flex items-center gap-1"
-                    >
-                      <Download size={12} />
-                      <span>{isEs ? 'Ver Markdown' : 'View Raw SKILL.md'}</span>
-                    </a>
-                    <span className="font-mono text-cyber-muted">
-                      {skill.downloads.toLocaleString()} {isEs ? 'descargas' : 'installs'}
+                  {/* Action Bar */}
+                  <div className="flex items-center justify-between gap-2 text-[11px] text-cyber-muted pt-1">
+                    <div className="flex items-center gap-3">
+                      <a
+                        href={`/api/skills/${skill.id}/download-file`}
+                        download={`${skill.id}.md`}
+                        className="hover:text-cyber-primary transition-colors flex items-center gap-1 font-medium"
+                        title="Download .md file"
+                      >
+                        <Download size={12} className="text-cyber-primary" />
+                        <span>{isEs ? 'Descargar .md' : 'Download .md'}</span>
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => handleCopyPrompt(skill)}
+                        className="hover:text-cyber-accent transition-colors flex items-center gap-1 font-medium"
+                        title="Copy complete SKILL.md to clipboard"
+                      >
+                        {copiedPromptId === skill.id ? (
+                          <>
+                            <Check size={12} className="text-cyber-emerald" />
+                            <span className="text-cyber-emerald">{isEs ? '¡Copiado!' : 'Copied!'}</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy size={12} />
+                            <span>{isEs ? 'Copiar Prompt' : 'Copy Prompt'}</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <span className="font-mono text-[10px] text-cyber-muted">
+                      {skill.downloads.toLocaleString()} {isEs ? 'usos' : 'installs'}
                     </span>
                   </div>
                 </div>

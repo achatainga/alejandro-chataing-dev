@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
-import { Shield, Users, Key, ArrowLeft, RefreshCw, Video as VideoIcon, Share2, CheckCircle2 } from 'lucide-react'
+import { Shield, Users, Key, ArrowLeft, RefreshCw, Video as VideoIcon, Share2, CheckCircle2, BookOpen } from 'lucide-react'
 import type { Language } from '../types/client.types'
 import type { LeadEntityDTO } from '../../server/dto/lead.dto'
 import type { VideoItem } from './VideoShowcase'
 import { AdminLeadsTab } from './admin/AdminLeadsTab'
 import { AdminVideosTab } from './admin/AdminVideosTab'
 import { AdminSocialsTab } from './admin/AdminSocialsTab'
+import { AdminBlogTab } from './admin/AdminBlogTab'
 
 interface AdminDashboardProps {
   lang: Language
@@ -16,7 +17,7 @@ export function AdminDashboard({ lang, onClose }: AdminDashboardProps) {
   const isEs = lang === 'es'
   const [secret, setSecret] = useState(() => localStorage.getItem('alejandro_admin_secret') || '')
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [activeTab, setActiveTab] = useState<'leads' | 'videos' | 'socials'>('leads')
+  const [activeTab, setActiveTab] = useState<'leads' | 'videos' | 'socials' | 'blog'>('leads')
   const [metrics, setMetrics] = useState<{ leadsCount: number; downloadsCount: number; sessionsCount: number } | null>(null)
   const [leads, setLeads] = useState<LeadEntityDTO[]>([])
   const [videos, setVideos] = useState<VideoItem[]>([])
@@ -219,6 +220,16 @@ export function AdminDashboard({ lang, onClose }: AdminDashboardProps) {
             <Share2 size={14} />
             <span>{isEs ? 'Redes Sociales' : 'Social Networks'}</span>
           </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('blog')}
+            className={`px-4 py-2 text-xs font-semibold rounded-t-lg transition-colors border-b-2 -mb-px flex items-center gap-2 ${
+              activeTab === 'blog' ? 'border-cyber-primary text-cyber-primary bg-cyber-card' : 'border-transparent text-cyber-muted hover:text-white'
+            }`}
+          >
+            <BookOpen size={14} />
+            <span>{isEs ? 'Edge Blog CMS' : 'Edge Blog CMS'}</span>
+          </button>
         </div>
 
         {activeTab === 'leads' && <AdminLeadsTab metrics={metrics} leads={leads} isEs={isEs} />}
@@ -239,6 +250,9 @@ export function AdminDashboard({ lang, onClose }: AdminDashboardProps) {
         )}
         {activeTab === 'socials' && (
           <AdminSocialsTab socials={socials} secret={secret} isEs={isEs} onSuccess={handleSuccess} />
+        )}
+        {activeTab === 'blog' && (
+          <AdminBlogTab secret={secret} isEs={isEs} onSuccess={handleSuccess} />
         )}
       </div>
     </div>

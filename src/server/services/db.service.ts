@@ -174,6 +174,89 @@ export class DatabaseService {
     }
   }
 
+  async getAllBlogPostsAdmin(): Promise<BlogPostDTO[]> {
+    const { results } = await this.db
+      .prepare(
+        `SELECT slug, title, summary, content_markdown as contentMarkdown,
+                tags, published, view_count as viewCount, published_at as publishedAt
+         FROM blog_posts
+         ORDER BY published_at DESC`
+      )
+      .all<any>()
+
+    return (results || []).map((row) => ({
+      ...row,
+      published: Boolean(row.published),
+      tags: this.parseTags(row.tags),
+    }))
+  }
+
+  async insertBlogPost(post: Partial<BlogPostDTO>): Promise<BlogPostDTO> {
+    const now = new Date().toISOString()
+    const tagsJson = JSON.stringify(post.tags || [])
+    const published = post.published ? 1 : 0
+
+    await this.db
+      .prepare(
+        `INSERT INTO blog_posts (slug, title, summary, content_markdown, tags, published, view_count, published_at)
+         VALUES (?, ?, ?, ?, ?, ?, 0, ?)`
+      )
+      .bind(post.slug, post.title, post.summary, post.contentMarkdown, tagsJson, published, now)
+      .run()
+
+    return {
+      slug: post.slug!,
+      title: post.title!,
+      summary: post.summary!,
+      contentMarkdown: post.contentMarkdown!,
+      tags: post.tags || [],
+      published: Boolean(published),
+      viewCount: 0,
+      publishedAt: now,
+    }
+  }
+
+  async updateBlogPost(slug: string, post: Partial<BlogPostDTO>): Promise<boolean> {
+    const fields: string[] = []
+    const bindings: any[] = []
+
+    if (post.title !== undefined) {
+      fields.push('title = ?')
+      bindings.push(post.title)
+    }
+    if (post.summary !== undefined) {
+      fields.push('summary = ?')
+      bindings.push(post.summary)
+    }
+    if (post.contentMarkdown !== undefined) {
+      fields.push('content_markdown = ?')
+      bindings.push(post.contentMarkdown)
+    }
+    if (post.tags !== undefined) {
+      fields.push('tags = ?')
+      bindings.push(JSON.stringify(post.tags))
+    }
+    if (post.published !== undefined) {
+      fields.push('published = ?')
+      bindings.push(post.published ? 1 : 0)
+    }
+
+    if (fields.length === 0) return true
+
+    bindings.push(slug)
+    const res = await this.db
+      .prepare(`UPDATE blog_posts SET ${fields.join(', ')} WHERE slug = ?`)
+      .bind(...bindings)
+      .run()
+
+    return Boolean(res.meta.changes && res.meta.changes > 0)
+  }
+
+  async deleteBlogPost(slug: string): Promise<boolean> {
+    const res = await this.db.prepare(`DELETE FROM blog_posts WHERE slug = ?`).bind(slug).run()
+    return Boolean(res.meta.changes && res.meta.changes > 0)
+  }
+
   async getMetricsSummary(): Promise<{ leadsCount: number; downloadsCount: number; sessionsCount: number }> {
     const leads = await this.db.prepare(`SELECT count(*) as total FROM leads`).first<{ total: number }>()
     const downloads = await this.db.prepare(`SELECT count(*) as total FROM skill_downloads`).first<{ total: number }>()

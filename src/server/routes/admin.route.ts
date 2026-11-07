@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import type { Env } from '../types/env'
 import { DatabaseService } from '../services/db.service'
+import { validateBlogPost } from '../dto/blog.dto'
 
 export const adminRoute = new Hono<{ Bindings: Env }>()
 
@@ -52,5 +53,65 @@ adminRoute.get('/leads', async (c) => {
     return c.json({ success: true, total: leads.length, leads })
   } catch (err: any) {
     return c.json({ success: false, error: 'Failed to retrieve leads' }, 500)
+  }
+})
+
+// Blog CMS Endpoints
+adminRoute.get('/blog', async (c) => {
+  try {
+    const dbService = new DatabaseService(c.env.DB)
+    const posts = await dbService.getAllBlogPostsAdmin()
+    return c.json({ success: true, total: posts.length, posts })
+  } catch (err: any) {
+    return c.json({ success: false, error: 'Failed to retrieve blog posts', detail: err?.message }, 500)
+  }
+})
+
+adminRoute.post('/blog', async (c) => {
+  try {
+    const body = await c.req.json().catch(() => null)
+    const validation = validateBlogPost(body)
+    if (!validation.valid || !validation.data) {
+      return c.json({ success: false, error: validation.error || 'Invalid blog post payload' }, 400)
+    }
+
+    const dbService = new DatabaseService(c.env.DB)
+    const post = await dbService.insertBlogPost(validation.data)
+    return c.json({ success: true, message: 'Blog post created successfully', post }, 201)
+  } catch (err: any) {
+    return c.json({ success: false, error: 'Failed to create blog post', detail: err?.message }, 500)
+  }
+})
+
+adminRoute.put('/blog/:slug', async (c) => {
+  try {
+    const slug = c.req.param('slug')
+    const body = await c.req.json().catch(() => ({}))
+    const dbService = new DatabaseService(c.env.DB)
+    const updated = await dbService.updateBlogPost(slug, body)
+
+    if (!updated) {
+      return c.json({ success: false, error: 'Blog post not found or no changes applied' }, 404)
+    }
+
+    return c.json({ success: true, message: 'Blog post updated successfully' })
+  } catch (err: any) {
+    return c.json({ success: false, error: 'Failed to update blog post', detail: err?.message }, 500)
+  }
+})
+
+adminRoute.delete('/blog/:slug', async (c) => {
+  try {
+    const slug = c.req.param('slug')
+    const dbService = new DatabaseService(c.env.DB)
+    const deleted = await dbService.deleteBlogPost(slug)
+
+    if (!deleted) {
+      return c.json({ success: false, error: 'Blog post not found' }, 404)
+    }
+
+    return c.json({ success: true, message: 'Blog post deleted successfully' })
+  } catch (err: any) {
+    return c.json({ success: false, error: 'Failed to delete blog post', detail: err?.message }, 500)
   }
 })

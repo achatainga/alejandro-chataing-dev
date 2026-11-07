@@ -46,7 +46,7 @@ export const SKILLS_CATALOG: SkillItem[] = [
     badge: 'Adversarial SRE & AppSec',
     highlight: true,
     summary: 'Motor de auditoría adversarial con 6 Hard Gates y falsación ejecutable con PoC. Elimina complacencia conversacional, carreras de datos y consultas no acotadas.',
-    installCli: 'agy skill install omni-maximus',
+    installCli: 'npx -y @achatainga/omni-maximus',
     features: [
       'Zero-Sycophancy Axiom: Evidencia ejecutable obligatoria antes de reportar hallazgos',
       'Pipeline de 6 Gates deterministas: Cadena de suministro, AST, SRE, UI, PoC y Remediación',
@@ -55,6 +55,8 @@ export const SKILLS_CATALOG: SkillItem[] = [
     ],
     tags: ['AppSec', 'SRE', 'Adversarial', 'Auditoría', 'PoC'],
     downloads: 3840,
+    npmUrl: 'https://www.npmjs.com/package/@achatainga/omni-maximus',
+    githubUrl: 'https://github.com/achatainga/omni-maximus',
     agensiUrl: 'https://agensi.io/skills/omni-maximus',
   },
   {

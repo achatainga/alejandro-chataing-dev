@@ -12,15 +12,5 @@
       "database_name": "alejandro-chataing-dev-db",
       "database_id": "2d1ca165-68ed-4d3c-878f-8f1ec7fa7705"
     }
-  ],
-  "vars": {
-    "ENVIRONMENT": "production",
-    "GEMINI_MODEL": "gemini-flash-lite-latest",
-    "GEMINI_API_KEY": "REDACTED_GEMINI_KEY",
-    "NOTIFICATION_PHONE": "+584241668876",
-    "EVOLUTION_API_URL": "https://evolution-api-latest-jkic.onrender.com",
-    "EVOLUTION_INSTANCE": "alejandro",
-    "ADMIN_EMAIL": "chataing.alejandro@gmail.com",
-    "ADMIN_SECRET": "REDACTED_ADMIN_SECRET"
-  }
+  ]
 }

@@ -4,13 +4,29 @@ import { DatabaseService } from '../services/db.service'
 
 export const adminRoute = new Hono<{ Bindings: Env }>()
 
+function timingSafeCompare(a: string, b: string): boolean {
+  if (a.length !== b.length) {
+    return false
+  }
+  let result = 0
+  for (let i = 0; i < a.length; i++) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i)
+  }
+  return result === 0
+}
+
 // Auth middleware for admin endpoints
 adminRoute.use('*', async (c, next) => {
-  const authHeader = c.req.header('Authorization') || ''
-  const token = authHeader.replace(/^Bearer\s+/i, '') || c.req.query('secret')
-  const expectedSecret = c.env.ADMIN_SECRET || 'REDACTED_ADMIN_SECRET'
+  const expectedSecret = c.env.ADMIN_SECRET
+  if (!expectedSecret) {
+    console.error('[AdminAuth] Server configuration error: ADMIN_SECRET is not configured')
+    return c.json({ success: false, error: 'Server misconfiguration: ADMIN_SECRET is required' }, 500)
+  }
 
-  if (!token || token !== expectedSecret) {
+  const authHeader = c.req.header('Authorization') || ''
+  const token = authHeader.replace(/^Bearer\s+/i, '').trim()
+
+  if (!token || !timingSafeCompare(token, expectedSecret)) {
     return c.json({ success: false, error: 'Unauthorized: Invalid admin credentials' }, 401)
   }
 

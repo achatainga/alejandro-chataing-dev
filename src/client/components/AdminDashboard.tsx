@@ -21,9 +21,10 @@ export function AdminDashboard({ lang, onClose }: AdminDashboardProps) {
     setLoading(true)
     setError(null)
     try {
+      const headers = { Authorization: `Bearer ${token}` }
       const [metricsRes, leadsRes] = await Promise.all([
-        fetch(`/api/admin/metrics?secret=${encodeURIComponent(token)}`),
-        fetch(`/api/admin/leads?secret=${encodeURIComponent(token)}`),
+        fetch('/api/admin/metrics', { headers }),
+        fetch('/api/admin/leads', { headers }),
       ])
 
       if (metricsRes.status === 401 || leadsRes.status === 401) {

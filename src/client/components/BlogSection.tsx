@@ -41,15 +41,15 @@ export function BlogSection({ lang }: BlogSectionProps) {
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyber-primary/10 border border-cyber-primary/20 text-cyber-primary text-xs font-mono uppercase tracking-wider mb-4">
             <BookOpen size={13} />
-            <span>{isEs ? 'Publicaciones de Ingeniería' : 'Engineering Deep Dives'}</span>
+            <span>{isEs ? 'Blog & Notas Técnicas' : 'Engineering Blog'}</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
-            {isEs ? 'Artículos Técnicos & Filosofía de Arquitectura' : 'Technical Articles & Systems Philosophy'}
+            {isEs ? 'Artículos y Notas de Desarrollo' : 'Articles & Engineering Notes'}
           </h2>
           <p className="text-cyber-muted text-sm sm:text-base">
             {isEs
-              ? 'Artículos publicados directamente en el edge con Cloudflare D1 sobre AST, PHP 8.3 Zero-Framework y flujos de IA.'
-              : 'Technical case studies served from Cloudflare Edge on AST surgery, Pure PHP 8.3 zero-framework, and agent SRE.'}
+              ? 'Publicaciones y lecciones prácticas sobre desarrollo web moderno, arquitectura de software y uso real de la inteligencia artificial.'
+              : 'Practical lessons and case studies on modern full-stack development, cloud architecture, and real-world AI applications.'}
           </p>
         </div>
 

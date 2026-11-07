@@ -1,0 +1,33 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "alejandro-chataing-dev",
+  "main": "src/server/index.ts",
+  "compatibility_date": "2025-03-07",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "alejandro-chataing-dev-db",
+      "database_id": "2d1ca165-68ed-4d3c-878f-8f1ec7fa7705"
+    }
+  ],
+  "vars": {
+    "ENVIRONMENT": "production",
+    "GEMINI_MODEL": "gemini-2.5-flash",
+    "NOTIFICATION_PHONE": "+584241668876",
+    "EVOLUTION_API_URL": "https://evolution-api-latest-jkic.onrender.com",
+    "EVOLUTION_INSTANCE": "alejandro",
+    "ADMIN_EMAIL": "chataing.alejandro@gmail.com"
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  }
+}

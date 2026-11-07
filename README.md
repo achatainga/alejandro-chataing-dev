@@ -35,7 +35,7 @@ GEMINI_API_KEY=AIzaSy...
 EVOLUTION_API_URL=https://evolution-api-latest-jkic.onrender.com
 EVOLUTION_INSTANCE=alejandro
 NOTIFICATION_PHONE=+584241668876
-ADMIN_SECRET=REDACTED_ADMIN_SECRET
+ADMIN_SECRET=your-secure-admin-secret
 ADMIN_EMAIL=chataing.alejandro@gmail.com
 ENVIRONMENT=development
 ```

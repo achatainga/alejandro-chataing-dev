@@ -9,7 +9,7 @@ export const cvEnglish: CVData = {
   github: 'achatainga',
   linkedin: 'alejandro-chataing-81798a106',
   summary:
-    'Senior Systems Engineer with 10+ years architecting high-concurrency production platforms across e-commerce marketplaces, blockchain data APIs, and autonomous AI agent workflows. Author of mcp-code-context (Enterprise Polyglot AST on NPM) and creator of a 12-tool MCP suite of adversarial guardrails for autonomous coding agents (PortLock, BurnGuard, LoopBreaker, OMNI-MAXIMUS, SecretCloak). Deep expertise in Cloudflare Workers edge architecture, Pure PHP 8.3 Zero-Framework standards (DT24 Core v4.0), React 19, Laravel, and Flutter. Bilingual communicator in C2 English and native Spanish.',
+    'Senior Full-Stack Engineer with 10+ years of experience building modern web applications, scalable backends, and practical AI integrations. Creator of the mcp-code-context developer library on NPM and author of open-source tools used across the AI ecosystem. Specialized in React, Node.js, PHP/Laravel, and modern Cloudflare Edge architectures. Fully bilingual in English (C2 certified) and Spanish.',
   experience: [
     {
       company: 'Detodo24.com',

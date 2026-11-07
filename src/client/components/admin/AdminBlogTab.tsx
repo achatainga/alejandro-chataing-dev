@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, Trash2, Eye, Edit3, CheckCircle, Globe, FileText } from 'lucide-react'
+import { Plus, Trash2, Edit3, FileText } from 'lucide-react'
 import type { BlogPostDTO } from '../../../server/dto/blog.dto'
 
 interface AdminBlogTabProps {

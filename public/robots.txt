@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /#admin
+Disallow: /api/admin/
+
+Sitemap: https://alejandro-chataing.pages.dev/sitemap.xml
+Sitemap: https://alejandro-chataing.dev/sitemap.xml

@@ -20,6 +20,16 @@ export function useAIChat(visitorHash: string, lang: Language, onTriggerHireModa
       timestamp: Date.now(),
     },
   ])
+  const [sessionId, setSessionId] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = sessionStorage.getItem('alejandro_chat_session_id')
+      if (stored) return stored
+      const newId = crypto.randomUUID()
+      sessionStorage.setItem('alejandro_chat_session_id', newId)
+      return newId
+    }
+    return crypto.randomUUID()
+  })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -40,6 +50,7 @@ export function useAIChat(visitorHash: string, lang: Language, onTriggerHireModa
 
       try {
         const payload = {
+          sessionId,
           visitorHash,
           language: lang,
           messages: [...messages, userMsg].map((m) => ({
@@ -64,6 +75,13 @@ export function useAIChat(visitorHash: string, lang: Language, onTriggerHireModa
           throw new Error(data.error || 'Failed to get AI reply')
         }
 
+        if (data.sessionId && data.sessionId !== sessionId) {
+          setSessionId(data.sessionId)
+          if (typeof window !== 'undefined') {
+            sessionStorage.setItem('alejandro_chat_session_id', data.sessionId)
+          }
+        }
+
         const assistantMsg: ChatMessage = {
           id: crypto.randomUUID(),
           role: 'assistant',
@@ -82,10 +100,15 @@ export function useAIChat(visitorHash: string, lang: Language, onTriggerHireModa
         setIsLoading(false)
       }
     },
-    [visitorHash, lang, messages, isLoading, onTriggerHireModal]
+    [visitorHash, lang, messages, isLoading, onTriggerHireModal, sessionId]
   )
 
   const clearChat = () => {
+    const newId = crypto.randomUUID()
+    setSessionId(newId)
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('alejandro_chat_session_id', newId)
+    }
     setMessages([
       {
         id: 'reset',

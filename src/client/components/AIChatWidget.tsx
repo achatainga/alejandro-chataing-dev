@@ -69,7 +69,7 @@ export function AIChatWidget({ lang, visitorHash, onOpenHireModal }: AIChatWidge
                     <span>Alejandro AI Agent</span>
                     <span className="w-1.5 h-1.5 rounded-full bg-cyber-emerald" />
                   </div>
-                  <div className="text-[10px] text-cyber-muted font-mono">Gemini 2.5 Flash • Edge</div>
+                  <div className="text-[10px] text-cyber-muted font-mono">Gemini Flash Lite • Edge</div>
                 </div>
               </div>
 

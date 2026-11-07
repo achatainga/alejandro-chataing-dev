@@ -7,6 +7,7 @@ import { skillsRoute } from './routes/skills.route'
 import { analyticsRoute } from './routes/analytics.route'
 import { blogRoute } from './routes/blog.route'
 import { adminRoute } from './routes/admin.route'
+import { videosRoute } from './routes/videos.route'
 
 export const app = new Hono<{ Bindings: Env }>()
 
@@ -27,6 +28,7 @@ app.route('/api/skills', skillsRoute)
 app.route('/api/analytics', analyticsRoute)
 app.route('/api/blog', blogRoute)
 app.route('/api/admin', adminRoute)
+app.route('/api/videos', videosRoute)
 
 // Health check endpoint
 app.get('/api/health', (c) => {

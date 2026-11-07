@@ -1,6 +1,8 @@
 import type { LeadEntityDTO, LeadSubmissionDTO } from '../dto/lead.dto'
 import type { TelemetryEventDTO } from '../dto/analytics.dto'
 import type { BlogPostDTO } from '../dto/blog.dto'
+import type { VideoDTO, CreateVideoDTO, SocialLinkDTO } from '../dto/video.dto'
+import { extractYouTubeId } from '../dto/video.dto'
 
 export class DatabaseService {
   constructor(private db: D1Database) {}
@@ -107,6 +109,19 @@ export class DatabaseService {
       .run()
   }
 
+  private parseTags(rawTags: unknown): string[] {
+    if (Array.isArray(rawTags)) return rawTags.map(String)
+    if (typeof rawTags === 'string') {
+      try {
+        const parsed = JSON.parse(rawTags)
+        if (Array.isArray(parsed)) return parsed.map(String)
+      } catch (_) {
+        return rawTags.split(',').map((t) => t.trim()).filter(Boolean)
+      }
+    }
+    return []
+  }
+
   async getBlogPosts(limit = 20): Promise<BlogPostDTO[]> {
     const safeLimit = Math.min(50, Math.max(1, limit))
     const { results } = await this.db
@@ -124,7 +139,7 @@ export class DatabaseService {
     return (results || []).map((row) => ({
       ...row,
       published: Boolean(row.published),
-      tags: typeof row.tags === 'string' ? JSON.parse(row.tags) : row.tags,
+      tags: this.parseTags(row.tags),
     }))
   }
 
@@ -147,7 +162,7 @@ export class DatabaseService {
     return {
       ...row,
       published: Boolean(row.published),
-      tags: typeof row.tags === 'string' ? JSON.parse(row.tags) : row.tags,
+      tags: this.parseTags(row.tags),
     }
   }
 
@@ -161,5 +176,81 @@ export class DatabaseService {
       downloadsCount: downloads?.total || 0,
       sessionsCount: sessions?.total || 0,
     }
+  }
+
+  async getVideos(): Promise<VideoDTO[]> {
+    const { results } = await this.db
+      .prepare(
+        `SELECT id, title, youtube_url as youtubeUrl, embed_id as embedId,
+                description, category, featured, sort_order as sortOrder,
+                created_at as createdAt
+         FROM showcase_videos
+         ORDER BY sort_order ASC, created_at DESC
+         LIMIT 50`
+      )
+      .all<any>()
+
+    return (results || []).map((r) => ({
+      ...r,
+      featured: Boolean(r.featured),
+    }))
+  }
+
+  async insertVideo(video: CreateVideoDTO): Promise<VideoDTO> {
+    const id = 'vid-' + crypto.randomUUID().slice(0, 8)
+    const embedId = extractYouTubeId(video.youtubeUrl)
+    const createdAt = new Date().toISOString()
+    const featured = video.featured ?? true
+
+    await this.db
+      .prepare(
+        `INSERT INTO showcase_videos (id, title, youtube_url, embed_id, description, category, featured, sort_order, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?)`
+      )
+      .bind(id, video.title, video.youtubeUrl, embedId, video.description, video.category, featured ? 1 : 0, createdAt)
+      .run()
+
+    return {
+      id,
+      title: video.title,
+      youtubeUrl: video.youtubeUrl,
+      embedId,
+      description: video.description,
+      category: video.category,
+      featured,
+      sortOrder: 0,
+      createdAt,
+    }
+  }
+
+  async deleteVideo(id: string): Promise<boolean> {
+    const res = await this.db.prepare(`DELETE FROM showcase_videos WHERE id = ?`).bind(id).run()
+    return Boolean(res.meta.changes && res.meta.changes > 0)
+  }
+
+  async getSocialLinks(): Promise<SocialLinkDTO[]> {
+    const { results } = await this.db
+      .prepare(
+        `SELECT platform, url, label, icon, updated_at as updatedAt
+         FROM social_links
+         ORDER BY platform ASC`
+      )
+      .all<SocialLinkDTO>()
+
+    return results || []
+  }
+
+  async updateSocialLink(platform: string, url: string, label: string): Promise<boolean> {
+    const now = new Date().toISOString()
+    await this.db
+      .prepare(
+        `INSERT INTO social_links (platform, url, label, updated_at)
+         VALUES (?, ?, ?, ?)
+         ON CONFLICT(platform) DO UPDATE SET url = excluded.url, label = excluded.label, updated_at = excluded.updated_at`
+      )
+      .bind(platform, url, label, now)
+      .run()
+
+    return true
   }
 }

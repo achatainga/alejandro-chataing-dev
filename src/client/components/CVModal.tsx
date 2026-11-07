@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { X, Printer, Mail, Phone, MapPin, Github, Linkedin } from 'lucide-react'
+import confetti from 'canvas-confetti'
 import type { Language } from '../types/client.types'
 import { cvEnglish } from '../data/cv.en'
 import { cvSpanish } from '../data/cv.es'
@@ -17,7 +18,19 @@ export function CVModal({ isOpen, onClose, lang }: CVModalProps) {
   const cv = isEs ? cvSpanish : cvEnglish
 
   const handlePrint = () => {
-    window.print()
+    try {
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.5 },
+        colors: ['#00d4ff', '#7c3aed', '#10b981'],
+      })
+    } catch {
+      // ignore in non-browser env
+    }
+    setTimeout(() => {
+      window.print()
+    }, 350)
   }
 
   return (

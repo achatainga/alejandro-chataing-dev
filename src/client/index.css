@@ -32,29 +32,29 @@
   background: #06b6d4;
 }
 
-/* Print Styles for CV modal */
+/* ========== @media print ========== */
+.print-cv-root {
+  display: none;
+}
+
 @media print {
-  body * {
-    visibility: hidden;
+  .print-cv-root {
+    display: block !important;
   }
-  #cv-print-area, #cv-print-area * {
-    visibility: visible;
-  }
-  #cv-print-area {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    background: #ffffff !important;
-    color: #000000 !important;
-    padding: 20px;
-  }
-  #cv-print-area * {
-    color: #000000 !important;
-    border-color: #cccccc !important;
-    background: transparent !important;
-  }
-  .no-print {
+
+  nav, main, footer, .no-print, [role="dialog"], .fixed, #root > div > main, #root > div > nav, #root > div > footer {
     display: none !important;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 0;
   }
 }

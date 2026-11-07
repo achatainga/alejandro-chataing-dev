@@ -65,11 +65,10 @@ export class WhatsAppNotificationService {
 
   private async sendTextMessage(phone: string, text: string): Promise<boolean> {
     const url = `${this.config.apiUrl.replace(/\/$/, '')}/message/sendText/${this.config.instance}`
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 4000)
 
     try {
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 4000)
-
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -83,8 +82,6 @@ export class WhatsAppNotificationService {
         signal: controller.signal,
       })
 
-      clearTimeout(timeoutId)
-
       if (!response.ok) {
         console.warn(`[WhatsApp] Evolution API returned HTTP ${response.status}`)
         return false
@@ -95,6 +92,8 @@ export class WhatsAppNotificationService {
     } catch (err: any) {
       console.warn(`[WhatsApp] Error dispatching WhatsApp notification:`, err?.message || err)
       return false
+    } finally {
+      clearTimeout(timeoutId)
     }
   }
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Globe, Menu, X, Sparkles, Send } from 'lucide-react'
+import { Globe, Menu, X, Sparkles, Send, Key } from 'lucide-react'
 import type { Language } from '../types/client.types'
 
 interface NavbarProps {
@@ -8,9 +8,10 @@ interface NavbarProps {
   onToggleLang: () => void
   onOpenHireModal: (interest?: string) => void
   onOpenCVModal: () => void
+  onOpenAdmin?: () => void
 }
 
-export function Navbar({ lang, onToggleLang, onOpenHireModal, onOpenCVModal }: NavbarProps) {
+export function Navbar({ lang, onToggleLang, onOpenHireModal, onOpenCVModal, onOpenAdmin }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -23,6 +24,7 @@ export function Navbar({ lang, onToggleLang, onOpenHireModal, onOpenCVModal }: N
   const navLinks = [
     { href: '#services', label: lang === 'es' ? 'Servicios' : 'Services' },
     { href: '#skills', label: lang === 'es' ? 'Skills & MCP' : 'Skills Hub' },
+    { href: '#videos', label: lang === 'es' ? 'Videos' : 'Videos' },
     { href: '#saas', label: lang === 'es' ? 'SaaS Agente' : 'SaaS Demo' },
     { href: '#projects', label: lang === 'es' ? 'Proyectos' : 'Projects' },
     { href: '#blog', label: lang === 'es' ? 'Blog' : 'Blog' },
@@ -31,19 +33,21 @@ export function Navbar({ lang, onToggleLang, onOpenHireModal, onOpenCVModal }: N
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-cyber-bg/85 backdrop-blur-md border-b border-cyber-border/70 py-3 shadow-lg' : 'bg-transparent py-5'
+        scrolled ? 'bg-cyber-bg/85 backdrop-blur-md border-b border-cyber-border/70 py-3 shadow-lg' : 'bg-transparent py-4'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
         {/* Brand */}
         <a href="#" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyber-primary to-cyber-accent p-0.5 shadow-md shadow-cyber-primary/20 group-hover:shadow-cyber-primary/40 transition-all">
-            <div className="w-full h-full bg-cyber-bg rounded-[10px] flex items-center justify-center font-mono font-bold text-cyber-primary text-sm tracking-wider">
-              AC
-            </div>
+          <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-cyber-primary to-cyber-accent p-0.5 shadow-md shadow-cyber-primary/20 group-hover:shadow-cyber-primary/40 transition-all">
+            <img
+              src="/AlejandroChataing.png"
+              alt="Alejandro Chataing"
+              className="w-full h-full rounded-[10px] object-cover"
+            />
           </div>
           <div>
-            <div className="font-bold text-sm tracking-tight text-cyber-text group-hover:text-cyber-primary transition-colors">
+            <div className="font-bold text-sm tracking-tight text-white group-hover:text-cyber-primary transition-colors">
               Alejandro Chataing
             </div>
             <div className="flex items-center gap-1.5 text-[11px] text-cyber-muted">
@@ -54,7 +58,7 @@ export function Navbar({ lang, onToggleLang, onOpenHireModal, onOpenCVModal }: N
         </a>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-5">
           {navLinks.map((link) => (
             <a
               key={link.href}
@@ -70,7 +74,7 @@ export function Navbar({ lang, onToggleLang, onOpenHireModal, onOpenCVModal }: N
             onClick={onOpenCVModal}
             className="text-xs font-medium text-cyber-accent hover:text-white transition-colors py-1 border-b border-cyber-accent/30"
           >
-            {lang === 'es' ? 'Ver CV / Resume' : 'View CV / Resume'}
+            {lang === 'es' ? 'Ver CV (PDF)' : 'Resume (PDF)'}
           </button>
         </nav>
 
@@ -81,15 +85,27 @@ export function Navbar({ lang, onToggleLang, onOpenHireModal, onOpenCVModal }: N
             onClick={onToggleLang}
             aria-label="Switch language"
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-cyber-border text-xs text-cyber-muted hover:text-cyber-text hover:border-cyber-primary/40 transition-colors"
+            title={lang === 'es' ? 'Switch to English' : 'Cambiar a Español'}
           >
             <Globe size={13} className="text-cyber-primary" />
-            <span className="font-mono font-semibold uppercase">{lang}</span>
+            <span className="font-mono font-semibold uppercase">{lang === 'es' ? '🇺🇸 EN' : '🇻🇪 ES'}</span>
           </button>
+
+          {onOpenAdmin && (
+            <button
+              type="button"
+              onClick={onOpenAdmin}
+              className="p-2 rounded-lg border border-cyber-border text-cyber-muted hover:text-cyber-primary hover:border-cyber-primary/40 transition-colors"
+              title={lang === 'es' ? 'Portal de Administración' : 'Admin Portal'}
+            >
+              <Key size={14} />
+            </button>
+          )}
 
           <button
             type="button"
             onClick={() => onOpenHireModal()}
-            className="relative inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-cyber-primary text-cyber-bg font-semibold text-xs shadow-md shadow-cyber-primary/25 hover:bg-cyan-300 transition-all transform hover:-translate-y-0.5"
+            className="relative inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-cyber-primary text-cyber-bg font-semibold text-xs shadow-md shadow-cyber-primary/25 hover:bg-cyan-300 transition-all transform hover:-translate-y-0.5"
           >
             <Send size={13} />
             <span>{lang === 'es' ? 'Contratar a Alejandro' : 'Hire Alejandro'}</span>
@@ -101,9 +117,9 @@ export function Navbar({ lang, onToggleLang, onOpenHireModal, onOpenCVModal }: N
           <button
             type="button"
             onClick={onToggleLang}
-            className="p-2 text-cyber-muted hover:text-cyber-text rounded-lg border border-cyber-border text-xs"
+            className="px-2 py-1.5 text-cyber-muted hover:text-cyber-text rounded-lg border border-cyber-border text-xs font-mono font-bold"
           >
-            <span className="font-mono font-semibold uppercase">{lang}</span>
+            {lang === 'es' ? 'EN' : 'ES'}
           </button>
           <button
             type="button"
@@ -144,8 +160,21 @@ export function Navbar({ lang, onToggleLang, onOpenHireModal, onOpenCVModal }: N
                 }}
                 className="w-full text-center py-2 text-xs font-semibold text-cyber-accent border border-cyber-accent/30 rounded-lg"
               >
-                {lang === 'es' ? 'Ver CV / Resume' : 'View CV / Resume'}
+                {lang === 'es' ? 'Ver CV (PDF)' : 'Resume (PDF)'}
               </button>
+              {onOpenAdmin && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileOpen(false)
+                    onOpenAdmin()
+                  }}
+                  className="w-full flex items-center justify-center gap-2 py-2 text-xs font-semibold text-cyber-muted border border-cyber-border rounded-lg"
+                >
+                  <Key size={14} />
+                  <span>{lang === 'es' ? 'Portal de Administración' : 'Admin Portal'}</span>
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => {

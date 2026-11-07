@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Navbar } from './components/Navbar'
 import { Hero } from './components/Hero'
 import { ServicesCards } from './components/ServicesCards'
 import { SkillsMarketplace } from './components/SkillsMarketplace'
+import { VideoShowcase } from './components/VideoShowcase'
 import { SaaSDemoSection } from './components/SaaSDemoSection'
 import { ProjectsShowcase } from './components/ProjectsShowcase'
 import { InteractiveSandboxes } from './components/InteractiveSandboxes'
@@ -10,6 +11,7 @@ import { BlogSection } from './components/BlogSection'
 import { AIChatWidget } from './components/AIChatWidget'
 import { HireMeModal } from './components/HireMeModal'
 import { CVModal } from './components/CVModal'
+import { PrintCV } from './components/PrintCV'
 import { AdminDashboard } from './components/AdminDashboard'
 import { Footer } from './components/Footer'
 import { useLang } from './hooks/useLang'
@@ -27,6 +29,13 @@ export function App() {
   const [cvModalOpen, setCvModalOpen] = useState(false)
   const [adminOpen, setAdminOpen] = useState(false)
 
+  // Detect URL parameter or hash for direct admin access
+  useEffect(() => {
+    if (window.location.hash === '#admin' || window.location.search.includes('admin=true')) {
+      setAdminOpen(true)
+    }
+  }, [])
+
   const handleOpenHireModal = (interest?: string, budget?: string) => {
     setHireModalInterest(interest)
     setHireModalBudget(budget)
@@ -42,13 +51,20 @@ export function App() {
         onToggleLang={toggleLang}
         onOpenHireModal={handleOpenHireModal}
         onOpenCVModal={() => setCvModalOpen(true)}
+        onOpenAdmin={() => setAdminOpen(true)}
       />
 
       {/* Main Content */}
       <main className="space-y-4">
-        <Hero lang={lang} onOpenHireModal={handleOpenHireModal} />
+        <Hero
+          lang={lang}
+          onOpenHireModal={handleOpenHireModal}
+          onOpenCVModal={() => setCvModalOpen(true)}
+          onOpenAdmin={() => setAdminOpen(true)}
+        />
         <ServicesCards lang={lang} onOpenHireModal={handleOpenHireModal} />
         <SkillsMarketplace lang={lang} />
+        <VideoShowcase lang={lang} onOpenAdmin={() => setAdminOpen(true)} />
         <SaaSDemoSection lang={lang} onOpenHireModal={handleOpenHireModal} />
         <ProjectsShowcase lang={lang} />
         <InteractiveSandboxes lang={lang} onOpenHireModal={() => handleOpenHireModal()} />
@@ -78,6 +94,9 @@ export function App() {
         lang={lang}
       />
 
+      {/* Permanent Printable Vector CV (Visible strictly on window.print()) */}
+      <PrintCV lang={lang} />
+
       {/* Private Admin & Telemetry Dashboard */}
       {adminOpen && (
         <AdminDashboard
@@ -95,4 +114,5 @@ export function App() {
     </div>
   )
 }
+
 export default App

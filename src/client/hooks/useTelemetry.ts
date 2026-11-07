@@ -17,12 +17,14 @@ export function useTelemetry() {
   const trackEvent = (
     eventType: 'page_view' | 'skill_download' | 'cli_copy' | 'dwell_time' | 'cta_click' | 'chat_opened',
     targetId?: string,
-    metadata?: Record<string, unknown>
+    metadata?: Record<string, unknown>,
+    keepalive = false
   ) => {
     try {
       fetch('/api/analytics', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        keepalive,
         body: JSON.stringify({
           visitorHash: visitorHash.current,
           eventType,
@@ -40,7 +42,7 @@ export function useTelemetry() {
     const handleBeforeUnload = () => {
       const dwellSeconds = Math.round((Date.now() - startTime) / 1000)
       if (dwellSeconds > 5) {
-        trackEvent('dwell_time', String(dwellSeconds))
+        trackEvent('dwell_time', String(dwellSeconds), undefined, true)
       }
     }
 

@@ -9,7 +9,7 @@ export class GeminiService {
   private model: string
 
   constructor(private config: GeminiServiceConfig) {
-    this.model = config.modelName || 'gemini-2.5-flash'
+    this.model = config.modelName || 'gemini-3.8-flash'
   }
 
   private buildSystemInstruction(language: 'en' | 'es'): string {

@@ -20,11 +20,13 @@
   ],
   "vars": {
     "ENVIRONMENT": "production",
-    "GEMINI_MODEL": "gemini-2.5-flash",
+    "GEMINI_MODEL": "gemini-3.8-flash",
+    "GEMINI_API_KEY": "REDACTED_GEMINI_KEY",
     "NOTIFICATION_PHONE": "+584241668876",
     "EVOLUTION_API_URL": "https://evolution-api-latest-jkic.onrender.com",
     "EVOLUTION_INSTANCE": "alejandro",
-    "ADMIN_EMAIL": "chataing.alejandro@gmail.com"
+    "ADMIN_EMAIL": "chataing.alejandro@gmail.com",
+    "ADMIN_SECRET": "REDACTED_ADMIN_SECRET"
   },
   "observability": {
     "enabled": true,

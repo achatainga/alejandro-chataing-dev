@@ -85,16 +85,24 @@ export class DatabaseService {
       .run()
   }
 
-  async upsertChatSession(sessionId: string, visitorHash: string, country?: string, city?: string, device?: string): Promise<void> {
+  async upsertChatSession(
+    sessionId: string,
+    visitorHash: string,
+    country?: string,
+    city?: string,
+    device?: string,
+    ipHash?: string
+  ): Promise<void> {
     await this.db
       .prepare(
-        `INSERT INTO chat_sessions (id, visitor_hash, country, city, device, message_count, updated_at)
-         VALUES (?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP)
+        `INSERT INTO chat_sessions (id, visitor_hash, country, city, device, ip_hash, message_count, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP)
          ON CONFLICT(id) DO UPDATE SET
            message_count = message_count + 1,
+           ip_hash = COALESCE(excluded.ip_hash, chat_sessions.ip_hash),
            updated_at = CURRENT_TIMESTAMP`
       )
-      .bind(sessionId, visitorHash, country || null, city || null, device || null)
+      .bind(sessionId, visitorHash, country || null, city || null, device || null, ipHash || null)
       .run()
   }
 

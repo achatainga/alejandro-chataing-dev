@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Send, Bot, ChevronDown, RefreshCw, Sparkles } from 'lucide-react'
+import { Send, Bot, ChevronDown, RefreshCw, Sparkles, MessageCircle, ShieldAlert } from 'lucide-react'
 import type { Language } from '../types/client.types'
 import { useAIChat } from '../hooks/useAIChat'
 
@@ -43,10 +43,12 @@ export function AIChatWidget({ lang, visitorHash, onOpenHireModal }: AIChatWidge
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!inputText.trim() || sessionLimitReached) return
+    if (!inputText.trim() || sessionLimitReached || remainingMessages <= 0) return
     sendMessage(inputText)
     setInputText('')
   }
+
+  const isLocked = sessionLimitReached || remainingMessages <= 0
 
   return (
     <div className="fixed bottom-5 right-5 z-40 font-sans">
@@ -56,7 +58,7 @@ export function AIChatWidget({ lang, visitorHash, onOpenHireModal }: AIChatWidge
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="w-[92vw] sm:w-96 h-[510px] bg-cyber-surface border border-cyber-border rounded-2xl shadow-2xl flex flex-col overflow-hidden mb-3"
+            className="w-[92vw] sm:w-96 h-[520px] bg-cyber-surface border border-cyber-border rounded-2xl shadow-2xl flex flex-col overflow-hidden mb-3"
           >
             {/* Header */}
             <div className="bg-cyber-card px-4 py-3 border-b border-cyber-border flex items-center justify-between">
@@ -73,21 +75,23 @@ export function AIChatWidget({ lang, visitorHash, onOpenHireModal }: AIChatWidge
                     <span>Edge AI</span>
                     <span>•</span>
                     <span className={remainingMessages <= 3 ? 'text-amber-400 font-bold' : 'text-cyber-muted'}>
-                      {remainingMessages}/15 {isEs ? 'mensajes' : 'msgs left'}
+                      {remainingMessages}/10 {isEs ? 'mensajes' : 'msgs left'}
                     </span>
                   </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-1">
-                <button
-                  type="button"
-                  onClick={clearChat}
-                  title={isEs ? 'Reiniciar sesión' : 'Reset chat'}
-                  className="p-1.5 rounded-lg text-cyber-muted hover:text-white transition-colors"
-                >
-                  <RefreshCw size={13} />
-                </button>
+                {!isLocked && (
+                  <button
+                    type="button"
+                    onClick={clearChat}
+                    title={isEs ? 'Reiniciar sesión' : 'Reset chat'}
+                    className="p-1.5 rounded-lg text-cyber-muted hover:text-white transition-colors"
+                  >
+                    <RefreshCw size={13} />
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
@@ -121,14 +125,15 @@ export function AIChatWidget({ lang, visitorHash, onOpenHireModal }: AIChatWidge
                 <div className="flex justify-start">
                   <div className="bg-cyber-card text-cyber-muted rounded-2xl rounded-tl-none px-3.5 py-2 border border-cyber-border text-[11px] flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-cyber-primary animate-ping" />
-                    <span>{isEs ? 'Pensando...' : 'Formulating response...'}</span>
+                    <span>{isEs ? 'Procesando en Edge...' : 'Processing on Edge...'}</span>
                   </div>
                 </div>
               )}
 
               {error && (
-                <div className="p-2.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-[11px]">
-                  {error}
+                <div className="p-2.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-[11px] flex items-start gap-1.5">
+                  <ShieldAlert size={14} className="shrink-0 mt-0.5" />
+                  <span>{error}</span>
                 </div>
               )}
 
@@ -136,10 +141,10 @@ export function AIChatWidget({ lang, visitorHash, onOpenHireModal }: AIChatWidge
             </div>
 
             {/* Quick Questions */}
-            {messages.length <= 2 && !sessionLimitReached && (
+            {messages.length <= 2 && !isLocked && (
               <div className="px-3 py-2 bg-cyber-bg/50 border-t border-cyber-border/60 flex flex-col gap-1">
                 <span className="text-[10px] text-cyber-muted font-mono uppercase tracking-wider">
-                  {isEs ? 'Preguntas sugeridas:' : 'Suggested questions:'}
+                  {isEs ? 'Preguntas rápidas:' : 'Suggested questions:'}
                 </span>
                 {quickQuestions.map((q, i) => (
                   <button
@@ -155,29 +160,50 @@ export function AIChatWidget({ lang, visitorHash, onOpenHireModal }: AIChatWidge
             )}
 
             {/* Session Limit Banner or Input Form */}
-            {sessionLimitReached ? (
-              <div className="p-3 bg-cyber-card border-t border-cyber-border text-center">
-                <p className="text-[11px] text-cyber-muted mb-2">
+            {isLocked ? (
+              <div className="p-3.5 bg-cyber-card border-t border-cyber-border text-center space-y-2">
+                <p className="text-[11px] text-cyber-muted">
                   {isEs
-                    ? 'Límite de sesión alcanzado. Conecta directamente con Alejandro:'
-                    : 'Session limit reached. Connect directly with Alejandro:'}
+                    ? '🔒 Límite de demostración completado. Conecta directamente con Alejandro:'
+                    : '🔒 Demonstration quota reached. Connect directly with Alejandro:'}
                 </p>
-                <button
-                  type="button"
-                  onClick={onOpenHireModal}
-                  className="w-full py-2 px-4 rounded-xl bg-gradient-to-r from-cyber-primary to-cyan-400 text-cyber-bg font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-cyan-300 transition-all"
-                >
-                  <Sparkles size={14} />
-                  <span>{isEs ? 'Abrir Formulario de Contacto Directo' : 'Open Direct Contact Form'}</span>
-                </button>
+                <div className="flex flex-col gap-2">
+                  <a
+                    href="https://wa.me/584241668876?text=Hola%20Alejandro,%20estoy%20en%20tu%20web%20y%20quiero%20conversar%20sobre%20un%20proyecto"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-2 px-3 rounded-xl bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-emerald-400 transition-colors"
+                  >
+                    <MessageCircle size={14} />
+                    <span>WhatsApp Directo (+58 424-1668876)</span>
+                  </a>
+                  <button
+                    type="button"
+                    onClick={onOpenHireModal}
+                    className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-cyber-primary to-cyan-400 text-cyber-bg font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:opacity-95 transition-all"
+                  >
+                    <Sparkles size={14} />
+                    <span>{isEs ? 'Abrir Formulario de Contratación' : 'Open Hiring Form'}</span>
+                  </button>
+                </div>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="p-3 bg-cyber-card border-t border-cyber-border">
+                {/* Honeypot trap hidden from users */}
+                <input
+                  type="text"
+                  name="_hp"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  className="hidden opacity-0 pointer-events-none absolute w-0 h-0"
+                  aria-hidden="true"
+                />
+
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
                     value={inputText}
-                    maxLength={600}
+                    maxLength={450}
                     onChange={(e) => setInputText(e.target.value)}
                     placeholder={isEs ? 'Pregunta sobre Alejandro o cotiza...' : 'Ask about Alejandro or his rates...'}
                     className="flex-1 bg-cyber-bg border border-cyber-border rounded-xl px-3 py-2 text-xs text-cyber-text focus:outline-none focus:border-cyber-primary"
@@ -190,9 +216,9 @@ export function AIChatWidget({ lang, visitorHash, onOpenHireModal }: AIChatWidge
                     <Send size={14} />
                   </button>
                 </div>
-                {inputText.length > 450 && (
+                {inputText.length > 350 && (
                   <div className="text-[10px] text-right text-cyber-muted mt-1 font-mono">
-                    {inputText.length}/600
+                    {inputText.length}/450
                   </div>
                 )}
               </form>

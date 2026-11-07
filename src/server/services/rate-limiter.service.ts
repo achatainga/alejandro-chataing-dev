@@ -7,18 +7,35 @@ export class RateLimiterService {
   // In-memory sliding window for ultra-fast burst protection (per edge isolate)
   private static burstStore = new Map<string, BurstWindow>()
 
-  private static readonly BURST_MAX = 5 // max 5 messages per 60s
+  public static readonly BURST_MAX = 4 // max 4 messages per 60s per IP
   private static readonly BURST_WINDOW_MS = 60 * 1000 // 60s
-  public static readonly SESSION_MAX = 15 // max 15 messages per session
-  public static readonly DAILY_MAX = 35 // max 35 messages per day per visitor
+  public static readonly SESSION_MAX = 10 // max 10 messages per chat session
+  public static readonly DAILY_VISITOR_MAX = 20 // max 20 messages per 24h per visitor
+  public static readonly DAILY_IP_MAX = 20 // max 20 messages per 24h per IP address
 
-  static checkBurst(identifier: string): { allowed: boolean; retryAfterSeconds?: number } {
+  /**
+   * Hashes a client IP using SHA-256 for privacy-preserving persistent rate-limiting.
+   */
+  static async hashIp(clientIp: string): Promise<string> {
+    try {
+      const data = new TextEncoder().encode(`chataing_edge_salt:${clientIp}`)
+      const digest = await crypto.subtle.digest('SHA-256', data)
+      const hashArray = Array.from(new Uint8Array(digest))
+      return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('').slice(0, 32)
+    } catch {
+      return clientIp.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 32)
+    }
+  }
+
+  /**
+   * Fast edge-isolate burst rate limiter (stops rapid-fire script attacks)
+   */
+  static checkBurst(clientIp: string): { allowed: boolean; retryAfterSeconds?: number } {
     const now = Date.now()
-    const record = this.burstStore.get(identifier)
+    const record = this.burstStore.get(clientIp)
 
-    // Clean expired record
     if (!record || now > record.resetAt) {
-      this.burstStore.set(identifier, { count: 1, resetAt: now + this.BURST_WINDOW_MS })
+      this.burstStore.set(clientIp, { count: 1, resetAt: now + this.BURST_WINDOW_MS })
       return { allowed: true }
     }
 
@@ -31,6 +48,9 @@ export class RateLimiterService {
     return { allowed: true }
   }
 
+  /**
+   * Checks current message count for a single session
+   */
   static async getSessionMessageCount(db: D1Database, sessionId: string): Promise<number> {
     try {
       const row = await db
@@ -44,6 +64,29 @@ export class RateLimiterService {
     }
   }
 
+  /**
+   * Checks daily message count across all sessions from a given IP hash
+   */
+  static async getDailyIpCount(db: D1Database, ipHash: string): Promise<number> {
+    try {
+      const row = await db
+        .prepare(
+          `SELECT COALESCE(SUM(message_count), 0) as total
+           FROM chat_sessions
+           WHERE ip_hash = ? AND updated_at >= datetime('now', '-1 day')`
+        )
+        .bind(ipHash)
+        .first<{ total: number }>()
+
+      return row?.total || 0
+    } catch {
+      return 0
+    }
+  }
+
+  /**
+   * Checks daily message count for a visitor hash
+   */
   static async getDailyVisitorCount(db: D1Database, visitorHash: string): Promise<number> {
     try {
       const row = await db

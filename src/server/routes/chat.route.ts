@@ -8,8 +8,40 @@ import { RateLimiterService } from '../services/rate-limiter.service'
 
 export const chatRoute = new Hono<{ Bindings: Env }>()
 
+/**
+ * Validates request origin against authorized hosts to block cross-site script abuse.
+ */
+function isAllowedRequestOrigin(originHeader?: string | null, refererHeader?: string | null): boolean {
+  const allowedHosts = [
+    'alejandro-chataing.pages.dev',
+    'alejandro-chataing.dev',
+    'localhost',
+    '127.0.0.1',
+  ]
+
+  const checkUrl = (urlStr?: string | null) => {
+    if (!urlStr) return true // Allow direct curl if no origin/referer header sent (checked by IP)
+    try {
+      const parsed = new URL(urlStr)
+      const host = parsed.hostname.toLowerCase()
+      return allowedHosts.some((h) => host === h || host.endsWith('.alejandro-chataing.pages.dev'))
+    } catch {
+      return false
+    }
+  }
+
+  return checkUrl(originHeader) && checkUrl(refererHeader)
+}
+
 chatRoute.post('/', async (c) => {
   try {
+    // 1. Cross-Site Origin & Referer Defense
+    const origin = c.req.header('origin')
+    const referer = c.req.header('referer')
+    if (!isAllowedRequestOrigin(origin, referer)) {
+      return c.json({ success: false, error: 'Unauthorized origin or cross-site request rejected' }, 403)
+    }
+
     const rawBody = await c.req.json().catch(() => null)
     const validation = validateChatRequest(rawBody)
 
@@ -20,11 +52,12 @@ chatRoute.post('/', async (c) => {
     const { sessionId, visitorHash, messages, language } = validation.data
     const lastUserMessage = messages[messages.length - 1].content
 
+    // 2. Real Client IP Extraction & Hashing
     const clientIp = c.req.header('cf-connecting-ip') || c.req.header('x-real-ip') || 'unknown-ip'
-    const throttleKey = `${clientIp}:${visitorHash}`
+    const ipHash = await RateLimiterService.hashIp(clientIp)
 
-    // 1. Fast Burst Rate Check (Max 5 msgs per 60s)
-    const burst = RateLimiterService.checkBurst(throttleKey)
+    // 3. Ultra-Fast In-Memory Burst Rate Check (Max 4 msgs per 60s per IP)
+    const burst = RateLimiterService.checkBurst(clientIp)
     if (!burst.allowed) {
       c.header('Retry-After', String(burst.retryAfterSeconds || 15))
       return c.json(
@@ -39,29 +72,45 @@ chatRoute.post('/', async (c) => {
       )
     }
 
-    // 2. Daily Visitor Cap Check (Max 35 msgs per 24h)
-    const dailyCount = await RateLimiterService.getDailyVisitorCount(c.env.DB, visitorHash)
-    if (dailyCount >= RateLimiterService.DAILY_MAX) {
+    // 4. Persistent D1 Daily IP Cap (Max 20 msgs per 24h per IP address)
+    const dailyIpCount = await RateLimiterService.getDailyIpCount(c.env.DB, ipHash)
+    if (dailyIpCount >= RateLimiterService.DAILY_IP_MAX) {
       return c.json(
         {
           success: false,
           error:
             language === 'es'
-              ? 'Has alcanzado el límite diario de demostración (35 mensajes/día). Para continuar conversando o cotizar tu proyecto, por favor contacta a Alejandro directamente vía WhatsApp o Correo.'
-              : 'You have reached the daily demonstration limit (35 messages/day). To continue or request a proposal, please contact Alejandro directly via WhatsApp or Email.',
+              ? 'Has alcanzado el límite diario de demostración para tu conexión (20 mensajes/día). Alejandro está disponible directamente para evaluar tu proyecto.'
+              : 'You have reached the daily demonstration limit for your connection (20 messages/day). Alejandro is available directly to discuss your project.',
           suggestedAction: 'open_hire_modal',
         },
         429
       )
     }
 
-    // 3. Session Message Budget Check (Max 15 msgs per session - Prevents AI API Drainage)
+    // 5. Persistent D1 Daily Visitor Cap (Max 20 msgs per 24h per visitor hash)
+    const dailyVisitorCount = await RateLimiterService.getDailyVisitorCount(c.env.DB, visitorHash)
+    if (dailyVisitorCount >= RateLimiterService.DAILY_VISITOR_MAX) {
+      return c.json(
+        {
+          success: false,
+          error:
+            language === 'es'
+              ? 'Has alcanzado el límite diario de demostración (20 mensajes/día). Para continuar o cotizar tu proyecto, contacta a Alejandro directamente vía WhatsApp o Correo.'
+              : 'You have reached the daily demonstration limit (20 messages/day). To continue or request a proposal, please contact Alejandro directly via WhatsApp or Email.',
+          suggestedAction: 'open_hire_modal',
+        },
+        429
+      )
+    }
+
+    // 6. Session Message Budget Check (Max 10 msgs per session)
     const currentSessionCount = await RateLimiterService.getSessionMessageCount(c.env.DB, sessionId)
     if (currentSessionCount >= RateLimiterService.SESSION_MAX) {
       const cutoffReply =
         language === 'es'
-          ? 'Has alcanzado el límite de 15 mensajes automáticos para esta sesión de demostración. Para avanzar en tu proyecto o coordinar una propuesta técnica detallada, Alejandro está disponible directamente por WhatsApp o Correo. ¿Deseas abrir el formulario de contacto directo?'
-          : "You've reached the 15-message demonstration limit for this session. To discuss your project requirements or receive a formal architecture proposal, Alejandro is available directly via WhatsApp or Email. Would you like to connect right away?"
+          ? 'Has alcanzado el límite de 10 mensajes automáticos para esta sesión de demostración. Para avanzar en tu proyecto o coordinar una propuesta técnica detallada, Alejandro está disponible directamente por WhatsApp o Correo. ¿Deseas abrir el formulario de contacto directo?'
+          : "You've reached the 10-message demonstration limit for this session. To discuss your project requirements or receive a formal architecture proposal, Alejandro is available directly via WhatsApp or Email. Would you like to connect right away?"
 
       return c.json({
         success: true,
@@ -74,15 +123,16 @@ chatRoute.post('/', async (c) => {
       })
     }
 
-    // Extract geo & device headers from Cloudflare
+    // 7. Cloudflare Geo, Device & Audit Metadata
     const country = c.req.header('cf-ipcountry') || 'Unknown'
     const city = c.req.header('cf-ipcity') || undefined
     const userAgent = c.req.header('user-agent') || 'Browser'
 
     const dbService = new DatabaseService(c.env.DB)
-    await dbService.upsertChatSession(sessionId, visitorHash, country, city, userAgent)
+    await dbService.upsertChatSession(sessionId, visitorHash, country, city, userAgent, ipHash)
     await dbService.appendChatMessage(sessionId, 'user', lastUserMessage)
 
+    // 8. Gemini Inference with Fallback Chain
     const apiKey = c.env.GEMINI_API_KEY
     let rawReply = ''
 
@@ -104,7 +154,7 @@ chatRoute.post('/', async (c) => {
 
     await dbService.appendChatMessage(sessionId, 'assistant', cleanReply)
 
-    // Trigger proactive WhatsApp alert if visitor expresses clear hiring intent
+    // 9. WhatsApp Proactive Notification for High Intent
     if (leadDetected && c.env.EVOLUTION_API_URL && c.env.NOTIFICATION_PHONE) {
       c.executionCtx.waitUntil(
         (async () => {

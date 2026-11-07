@@ -8,6 +8,9 @@ export interface ChatMessage {
   timestamp: number
 }
 
+const DEFAULT_SESSION_BUDGET = 10
+const COOLDOWN_MS = 2500
+
 export function useAIChat(visitorHash: string, lang: Language, onTriggerHireModal?: () => void) {
   const [messages, setMessages] = useState<ChatMessage[]>(() => [
     {
@@ -15,8 +18,8 @@ export function useAIChat(visitorHash: string, lang: Language, onTriggerHireModa
       role: 'assistant',
       content:
         lang === 'es'
-          ? '¡Hola! Soy el Asistente de IA oficial de Alejandro Chataing. ¿Te gustaría saber sobre su experiencia en sistemas distribuidos, su servidor mcp-code-context o cómo puede colaborar contigo?'
-          : "Hello! I am Alejandro Chataing's official AI Assistant. Would you like to know about his production experience, mcp-code-context, or how you can hire him for your project?",
+          ? '¡Hola! Soy el Asistente de IA oficial de Alejandro Chataing. ¿Te gustaría conocer su experiencia con sistemas distribuidos, su herramienta mcp-code-context o coordinar una propuesta técnica?'
+          : "Hello! I am Alejandro Chataing's official AI Assistant. Would you like to review his production systems, mcp-code-context, or discuss hiring him for your team?",
       timestamp: Date.now(),
     },
   ])
@@ -32,7 +35,13 @@ export function useAIChat(visitorHash: string, lang: Language, onTriggerHireModa
   })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [remainingMessages, setRemainingMessages] = useState<number>(15)
+  const [remainingMessages, setRemainingMessages] = useState<number>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = sessionStorage.getItem('alejandro_chat_remaining')
+      return stored ? parseInt(stored, 10) : DEFAULT_SESSION_BUDGET
+    }
+    return DEFAULT_SESSION_BUDGET
+  })
   const [sessionLimitReached, setSessionLimitReached] = useState(false)
   const [lastSentTime, setLastSentTime] = useState(0)
 
@@ -41,31 +50,41 @@ export function useAIChat(visitorHash: string, lang: Language, onTriggerHireModa
       const trimmed = text.trim()
       if (!trimmed || isLoading) return
 
-      if (trimmed.length > 600) {
+      if (trimmed.length < 3) {
         setError(
           lang === 'es'
-            ? 'El mensaje excede el límite de 600 caracteres. Por favor, sé conciso o contacta a Alejandro directamente.'
-            : 'Message exceeds the 600-character limit. Please be concise or contact Alejandro directly.'
+            ? 'Por favor escribe una pregunta más específica (mínimo 3 caracteres).'
+            : 'Please write a more specific question (minimum 3 characters).'
+        )
+        return
+      }
+
+      if (trimmed.length > 450) {
+        setError(
+          lang === 'es'
+            ? 'El mensaje excede el límite de 450 caracteres. Por favor, sé conciso o contacta a Alejandro directamente.'
+            : 'Message exceeds the 450-character limit. Please be concise or contact Alejandro directly.'
         )
         return
       }
 
       const now = Date.now()
-      if (now - lastSentTime < 2000) {
+      if (now - lastSentTime < COOLDOWN_MS) {
+        const waitSec = Math.ceil((COOLDOWN_MS - (now - lastSentTime)) / 1000)
         setError(
           lang === 'es'
-            ? 'Por favor espera unos segundos antes de enviar otro mensaje.'
-            : 'Please wait a moment before sending another message.'
+            ? `Por favor espera ${waitSec}s antes de enviar otro mensaje.`
+            : `Please wait ${waitSec}s before sending another message.`
         )
         return
       }
       setLastSentTime(now)
 
-      if (sessionLimitReached) {
+      if (sessionLimitReached || remainingMessages <= 0) {
         setError(
           lang === 'es'
-            ? 'Límite de 15 mensajes alcanzado. Para coordinar tu proyecto, contacta a Alejandro directamente.'
-            : '15-message session limit reached. Please contact Alejandro directly for project inquiries.'
+            ? 'Límite de 10 mensajes alcanzado. Para coordinar tu proyecto, contacta a Alejandro directamente.'
+            : '10-message session limit reached. Please contact Alejandro directly for project inquiries.'
         )
         if (onTriggerHireModal) onTriggerHireModal()
         return
@@ -87,6 +106,7 @@ export function useAIChat(visitorHash: string, lang: Language, onTriggerHireModa
           sessionId,
           visitorHash,
           language: lang,
+          _hp: '', // Honeypot trap (must remain empty)
           messages: [...messages, userMsg].map((m) => ({
             role: m.role,
             content: m.content,
@@ -115,6 +135,7 @@ export function useAIChat(visitorHash: string, lang: Language, onTriggerHireModa
           }
           setMessages((prev) => [...prev, alertMsg])
           setError(errMsg)
+          setSessionLimitReached(true)
           if (errData?.suggestedAction === 'open_hire_modal' && onTriggerHireModal) {
             onTriggerHireModal()
           }
@@ -122,7 +143,8 @@ export function useAIChat(visitorHash: string, lang: Language, onTriggerHireModa
         }
 
         if (!res.ok) {
-          throw new Error(`Server returned HTTP ${res.status}`)
+          const errData = await res.json().catch(() => null)
+          throw new Error(errData?.error || `Server returned HTTP ${res.status}`)
         }
 
         const data: any = await res.json()
@@ -140,6 +162,9 @@ export function useAIChat(visitorHash: string, lang: Language, onTriggerHireModa
 
         if (typeof data.remainingMessages === 'number') {
           setRemainingMessages(data.remainingMessages)
+          if (typeof window !== 'undefined') {
+            sessionStorage.setItem('alejandro_chat_remaining', String(data.remainingMessages))
+          }
         }
 
         if (data.sessionLimitReached) {
@@ -164,14 +189,18 @@ export function useAIChat(visitorHash: string, lang: Language, onTriggerHireModa
         setIsLoading(false)
       }
     },
-    [visitorHash, lang, messages, isLoading, onTriggerHireModal, sessionId, lastSentTime, sessionLimitReached]
+    [visitorHash, lang, messages, isLoading, onTriggerHireModal, sessionId, lastSentTime, sessionLimitReached, remainingMessages]
   )
 
   const clearChat = () => {
+    // If rate limit was reached on server, keep limit in place
+    if (sessionLimitReached || remainingMessages <= 0) {
+      if (onTriggerHireModal) onTriggerHireModal()
+      return
+    }
+
     const newId = crypto.randomUUID()
     setSessionId(newId)
-    setRemainingMessages(15)
-    setSessionLimitReached(false)
     if (typeof window !== 'undefined') {
       sessionStorage.setItem('alejandro_chat_session_id', newId)
     }

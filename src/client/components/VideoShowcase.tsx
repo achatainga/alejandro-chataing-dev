@@ -52,15 +52,15 @@ export function VideoShowcase({ lang, onOpenAdmin }: VideoShowcaseProps) {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-red-500/10 border border-red-500/30 text-xs font-mono text-red-400 mb-3">
               <Youtube size={14} />
-              <span>{isEs ? 'Demostraciones en Video' : 'Live Demonstrations'}</span>
+              <span>{isEs ? 'Demostraciones en Video' : 'Video Demos'}</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              {isEs ? 'Showcase de Arquitectura y Sesiones de Código' : 'Architecture Showcase & System Walkthroughs'}
+              {isEs ? 'Demostraciones en Video y Explicaciones Prácticas' : 'Video Walkthroughs & Practical Demos'}
             </h2>
             <p className="text-sm sm:text-base text-cyber-muted mt-2 max-w-2xl">
               {isEs
-                ? 'Mira recorridos arquitectónicos reales, explicaciones de mcp-code-context y demostraciones de agentes en producción.'
-                : 'Watch in-depth technical walkthroughs, AST surgical editing demonstrations, and high-concurrency systems in action.'}
+                ? 'Explicaciones visuales de mis proyectos, cómo funciona el código y cómo aplicarlo en tu negocio.'
+                : 'Step-by-step visual walkthroughs of my projects, code architecture, and real-world implementations.'}
             </p>
           </div>
 

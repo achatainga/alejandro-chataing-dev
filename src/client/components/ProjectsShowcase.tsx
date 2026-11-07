@@ -19,15 +19,15 @@ export function ProjectsShowcase({ lang }: ProjectsShowcaseProps) {
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyber-primary/10 border border-cyber-primary/20 text-cyber-primary text-xs font-mono uppercase tracking-wider mb-4">
             <Layers size={13} />
-            <span>{isEs ? 'Casos de Estudio en Producción' : 'Production Case Studies'}</span>
+            <span>{isEs ? 'Casos Reales y Proyectos' : 'Featured Projects'}</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
-            {isEs ? 'Sistemas Diseñados y Desplegados en Producción' : 'Architected & Deployed for Production Scale'}
+            {isEs ? 'Proyectos que He Diseñado y Construido' : 'Systems Architected & Shipped to Production'}
           </h2>
           <p className="text-cyber-muted text-sm sm:text-base">
             {isEs
-              ? 'Proyectos reales que procesan transacciones, manejan alta concurrencia e integran agentes de IA en el edge.'
-              : 'Real-world platforms processing transactions, handling extreme concurrency, and powering edge AI.'}
+              ? 'Aplicaciones reales que resuelven problemas concretos: desde e-commerce y herramientas de desarrollo hasta asistentes de IA en la nube.'
+              : 'Real-world platforms solving concrete problems: from high-traffic e-commerce to developer tools and cloud AI agents.'}
           </p>
         </div>
 

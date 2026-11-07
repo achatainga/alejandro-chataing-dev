@@ -16,12 +16,10 @@ export function SkillsMarketplace({ lang }: SkillsMarketplaceProps) {
   const [copiedPromptId, setCopiedPromptId] = useState<string | null>(null)
 
   const categories = [
-    { id: 'all', label: isEs ? 'Todos los Skills (13)' : 'All Skills (13)' },
-    { id: 'mcp', label: 'MCP Servers' },
-    { id: 'sre-verification', label: isEs ? 'Verificación & SRE' : 'Verification & SRE' },
-    { id: 'coding-standards', label: isEs ? 'Estándares de Código' : 'Coding Standards' },
-    { id: 'motion-ui', label: 'Motion & React 19' },
-    { id: 'meta-workflow', label: isEs ? 'Flujos y Git' : 'Meta & Git' },
+    { id: 'all', label: isEs ? 'Todas las Herramientas (12)' : 'All Agent Tools (12)' },
+    { id: 'mcp', label: isEs ? 'Servidores MCP' : 'MCP Servers' },
+    { id: 'sre-verification', label: isEs ? 'SRE & Guardarraíles' : 'SRE & Guardrails' },
+    { id: 'coding-standards', label: isEs ? 'AST & Contratos' : 'AST & Contracts' },
   ]
 
   const filteredSkills = selectedCategory === 'all'
@@ -135,6 +133,19 @@ export function SkillsMarketplace({ lang }: SkillsMarketplaceProps) {
                         rel="noreferrer"
                         className="text-cyber-muted hover:text-cyber-primary"
                         aria-label="View on NPM"
+                        title="Ver en NPM"
+                      >
+                        <ExternalLink size={13} />
+                      </a>
+                    )}
+                    {skill.agensiUrl && !skill.npmUrl && (
+                      <a
+                        href={skill.agensiUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-cyber-muted hover:text-cyber-accent"
+                        aria-label="View on Agensi.io"
+                        title="Ver en Agensi.io"
                       >
                         <ExternalLink size={13} />
                       </a>

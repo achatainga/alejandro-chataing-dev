@@ -9,7 +9,7 @@ export const cvEnglish: CVData = {
   github: 'achatainga',
   linkedin: 'alejandro-chataing-81798a106',
   summary:
-    'Senior Systems Engineer with 10+ years architecting high-concurrency production platforms across e-commerce marketplaces, blockchain data APIs, and autonomous AI agent workflows. Author of mcp-code-context (v7.0.0 Enterprise Polyglot on NPM), an open-source MCP server using Tree-sitter WASM for surgical AST code manipulation that conserves up to 85% of LLM context windows across 10+ languages. Creator of 12 published agent skills. Deep expertise in Cloudflare Workers edge architecture, Pure PHP 8.3 Zero-Framework standards, React 19, Laravel, and Flutter. Bilingual communicator in C2 English and native Spanish.',
+    'Senior Systems Engineer with 10+ years architecting high-concurrency production platforms across e-commerce marketplaces, blockchain data APIs, and autonomous AI agent workflows. Author of mcp-code-context (v7.0.0 Enterprise Polyglot on NPM) and creator of a 12-tool MCP suite of adversarial guardrails for autonomous coding agents (PortLock, BurnGuard, LoopBreaker, OMNI-MAXIMUS, SecretCloak). Deep expertise in Cloudflare Workers edge architecture, Pure PHP 8.3 Zero-Framework standards (DT24 Core v4.0), React 19, Laravel, and Flutter. Bilingual communicator in C2 English and native Spanish.',
   experience: [
     {
       company: 'Detodo24.com',
@@ -91,7 +91,15 @@ export const cvEnglish: CVData = {
       description:
         'Multi-tenant Cloudflare Workers platform with Durable Objects, D1 database, and Evolution API WhatsApp integration, orchestrating automated AI customer appointments and autonomous business agents.',
       tech: ['Cloudflare Workers', 'Hono', 'Durable Objects', 'D1 SQL', 'WhatsApp', 'Gemini'],
+      url: 'https://github.com/achatainga/edge-ai-orchestrator',
       highlight: true,
+    },
+    {
+      name: 'Edge AI Video Engine',
+      description:
+        'Autonomous vertical video rendering and cinematic assembly engine with FFmpeg, Edge-TTS, Librosa beat synchronization, and automated WhatsApp dispatch.',
+      tech: ['FastAPI', 'Python', 'FFmpeg', 'Edge-TTS', 'Librosa', 'Evolution API'],
+      url: 'https://github.com/achatainga/edge-ai-video-engine',
     },
     {
       name: 'Settleflow',
@@ -100,17 +108,17 @@ export const cvEnglish: CVData = {
       tech: ['Node.js', 'TypeScript', 'D1', 'WhatsApp API', 'Redlock'],
     },
     {
+      name: 'Victory Homes PWA',
+      description:
+        'Dual-currency (USD/VES/USDT) field sales administration system — React PWA powered by a serverless backend on Cloudflare Workers and D1 database.',
+      tech: ['React PWA', 'Cloudflare Workers', 'D1 SQL', 'Tailwind CSS', 'TypeScript'],
+      url: 'https://github.com/achatainga/victory-homes',
+    },
+    {
       name: 'dt24-home-engine & dt24-product-wizard',
       description:
         'Production WordPress plugins powering the DeTodo24 marketplace under DT24 Core Standard v4.0 (Pure PHP 8.3 Zero-Framework). Features React Admin dashboards, custom REST APIs, and strict SRE physical limit guardrails.',
       tech: ['Pure PHP 8.3', 'WordPress', 'React 19', 'REST API', 'MySQL'],
-    },
-    {
-      name: 'NonFungible.com API',
-      description:
-        'High-throughput Web3 API delivering real-time Ethereum NFT blockchain analytics to institutional and enterprise subscribers.',
-      tech: ['Node.js', 'MongoDB', 'Ethereum', 'Web3', 'REST API'],
-      url: 'https://nonfungible.com',
     },
   ],
   skillGroups: [

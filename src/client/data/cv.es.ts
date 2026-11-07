@@ -9,7 +9,7 @@ export const cvSpanish: CVData = {
   github: 'achatainga',
   linkedin: 'alejandro-chataing-81798a106',
   summary:
-    'Ingeniero de Sistemas Senior con más de 10 años diseñando plataformas de alta concurrencia en producción: marketplaces e-commerce, APIs de analítica blockchain y flujos autónomos con agentes de IA. Autor de mcp-code-context (v7.0.0 Enterprise Polyglot en NPM) y creador de la suite de 12 herramientas MCP y guardarraíles adversariales para agentes de IA (PortLock, BurnGuard, LoopBreaker, OMNI-MAXIMUS, SecretCloak). Especialista en arquitectura serverless con Cloudflare Workers, PHP 8.3 Puro con estándares Zero-Framework (DT24 v4.0), React 19, Laravel y Flutter. Comunicador bilingüe en inglés C2 y español nativo.',
+    'Ingeniero de Sistemas Senior con más de 10 años diseñando plataformas de alta concurrencia en producción: marketplaces e-commerce, APIs de analítica blockchain y flujos autónomos con agentes de IA. Autor de mcp-code-context (Enterprise Polyglot AST en NPM) y creador de la suite de 12 herramientas MCP y guardarraíles adversariales para agentes de IA (PortLock, BurnGuard, LoopBreaker, OMNI-MAXIMUS, SecretCloak). Especialista en arquitectura serverless con Cloudflare Workers, PHP 8.3 Puro con estándares Zero-Framework (DT24 v4.0), React 19, Laravel y Flutter. Comunicador bilingüe en inglés C2 y español nativo.',
   experience: [
     {
       company: 'Detodo24.com',
@@ -19,7 +19,7 @@ export const cvSpanish: CVData = {
       bullets: [
         'Líder de arquitectura de la plataforma e-commerce multi-vendedor: plugins de WordPress + API REST Laravel + aplicación móvil Flutter',
         'Desarrollé dt24-home-engine y dt24-product-wizard — plugins de WordPress en producción con React Admin UIs, APIs REST a medida y límites SRE estrictos',
-        'Publiqué mcp-code-context (v7.0.0 en NPM): lectura, edición y análisis de blast radius quirúrgico con AST Tree-sitter WASM sin dependencias nativas',
+        'Publiqué mcp-code-context (Enterprise Polyglot en NPM): lectura, edición y análisis de blast radius quirúrgico con AST Tree-sitter WASM sin dependencias nativas',
         'Estandaricé el desarrollo asistido por IA en el equipo: multiplicador de velocidad diario con Antigravity, Kiro IDE y Gemini AI Studio',
         'Diseñé la sincronización móvil <-> API y estado distribuido con Flutter + Laravel + MySQL con bloqueos atómicos CAS',
       ],
@@ -81,7 +81,7 @@ export const cvSpanish: CVData = {
     {
       name: 'mcp-code-context Pro',
       description:
-        'Servidor MCP de código abierto insignia (v7.0.0 Enterprise) — lectura, edición y búsqueda quirúrgica basada en AST con Tree-sitter WASM para agentes de IA. Cero dependencias nativas, 15 parsers, confirmación de diffs en 2 fases, caché SQLite persistente y 85% de ahorro en tokens.',
+        'Servidor MCP de código abierto insignia (Enterprise Polyglot AST) — lectura, edición y búsqueda quirúrgica basada en AST con Tree-sitter WASM para agentes de IA. Cero dependencias nativas, 15 parsers, confirmación de diffs en 2 fases, caché SQLite persistente y 85% de ahorro en tokens.',
       tech: ['TypeScript', 'Node.js', 'Tree-sitter WASM', 'Protocolo MCP', 'SQLite', 'AST'],
       url: 'https://www.npmjs.com/package/mcp-code-context',
       highlight: true,
@@ -145,7 +145,7 @@ export const cvSpanish: CVData = {
     {
       category: 'IA & Sistemas Multi-Agente',
       skills: [
-        { name: 'mcp-code-context (autor v7.0.0)', level: 99 },
+        { name: 'mcp-code-context (autor)', level: 99 },
         { name: 'Cirugía AST con Tree-sitter WASM', level: 98 },
         { name: 'Arquitectura de Skills de Agentes (12 skills)', level: 96 },
         { name: 'Gemini API & Streaming en Workers AI', level: 94 },

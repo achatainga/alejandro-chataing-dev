@@ -19,7 +19,7 @@ export const SKILLS_CATALOG: SkillItem[] = [
   {
     id: 'mcp-code-context',
     name: 'mcp-code-context Pro',
-    version: '7.0.0 Enterprise',
+    version: 'Enterprise Polyglot',
     category: 'mcp',
     badge: 'Flagship Open-Source',
     highlight: true,

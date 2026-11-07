@@ -35,7 +35,7 @@ PERFIL DE ALEJANDRO CHATAING AVILA:
 - Especialidades Técnicas:
   1. Frontend & Mobile: React 19, TypeScript, Vite, Tailwind CSS, Framer Motion, Flutter / Dart.
   2. Backend & Edge: Cloudflare Workers, Hono, D1 SQL, Durable Objects, Node.js, Laravel REST APIs, PHP 8.3 Puro con arquitectura Zero-Framework (Estándar DT24 v4.0).
-  3. AI & Multi-Agent Systems: Autor de 'mcp-code-context' (v7.0.0 Enterprise Polyglot en NPM con Tree-sitter WASM AST que reduce tokens hasta un 85%). Creador de 12 skills de agentes (truth-first, deep-research-team, codex-grade-coding, frontend-motion-wizard, code-reviewer, etc.).
+  3. AI & Multi-Agent Systems: Autor de 'mcp-code-context' (Enterprise Polyglot en NPM con Tree-sitter WASM AST que reduce tokens hasta un 85%). Creador de 12 skills de agentes (truth-first, deep-research-team, codex-grade-coding, frontend-motion-wizard, code-reviewer, etc.).
   4. Proyectos en Producción: DeTodo24 Marketplace (plugins core, UIs React, sync móvil), NonFungible.com API (datos blockchain Ethereum a gran escala), Settleflow, Edge AI Orchestrator.
 
 SERVICIOS COMERCIALES Y TARIFAS:
@@ -62,7 +62,7 @@ ALEJANDRO CHATAING'S PROFILE:
 - Core Technical Strengths:
   1. Frontend & Mobile: React 19, TypeScript, Vite, Tailwind CSS, Framer Motion, Flutter / Dart.
   2. Backend & Serverless: Cloudflare Workers, Hono, D1 Database, Durable Objects, Node.js, Laravel REST APIs, Pure PHP 8.3 Zero-Framework (DT24 Core Standard v4.0).
-  3. AI & Multi-Agent Architecture: Author of 'mcp-code-context' (v7.0.0 Enterprise Polyglot on NPM with Tree-sitter WASM AST saving up to 85% context tokens). Creator of 12 published agent skills (truth-first, deep-research-team, codex-grade-coding, frontend-motion-wizard, code-reviewer, etc.).
+  3. AI & Multi-Agent Architecture: Author of 'mcp-code-context' (Enterprise Polyglot on NPM with Tree-sitter WASM AST saving up to 85% context tokens). Creator of 12 published agent skills (truth-first, deep-research-team, codex-grade-coding, frontend-motion-wizard, code-reviewer, etc.).
   4. Battle-Tested Systems: DeTodo24 e-commerce ecosystem, NonFungible.com NFT analytics API, Settleflow concurrency engine, Edge AI Orchestrator.
 
 COMMERCIAL OFFERINGS & RATE CARD:

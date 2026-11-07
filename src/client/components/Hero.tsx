@@ -125,8 +125,8 @@ export function Hero({ lang, onOpenHireModal, onOpenCVModal, onOpenAdmin }: Hero
             className="text-base sm:text-lg text-cyber-muted leading-relaxed max-w-2xl mx-auto mb-7"
           >
             {isEs
-              ? 'Senior Full-Stack Engineer con 10+ años en producción. Autor de mcp-code-context (v7.0.0 Enterprise AST en NPM) y 12 skills de agentes. Experto en Cloudflare Edge, PHP 8.3 Zero-Framework, React 19 y SaaS de IA multicanal.'
-              : 'Senior Full-Stack Engineer with 10+ years building production platforms. Author of mcp-code-context (v7.0.0 Enterprise Polyglot AST) and 12 published agent skills. Specialist in Cloudflare Edge, Pure PHP 8.3 zero-framework, React 19, and turnkey AI SaaS.'}
+              ? 'Senior Full-Stack Engineer con 10+ años en producción. Autor de mcp-code-context (Enterprise Polyglot AST en NPM) y 12 skills de agentes. Experto en Cloudflare Edge, PHP 8.3 Zero-Framework, React 19 y SaaS de IA multicanal.'
+              : 'Senior Full-Stack Engineer with 10+ years building production platforms. Author of mcp-code-context (Enterprise Polyglot AST on NPM) and 12 published agent skills. Specialist in Cloudflare Edge, Pure PHP 8.3 zero-framework, React 19, and turnkey AI SaaS.'}
           </motion.p>
 
           {/* Action CTAs */}
@@ -206,8 +206,8 @@ export function Hero({ lang, onOpenHireModal, onOpenCVModal, onOpenAdmin }: Hero
               <div className="text-xs text-cyber-muted">{isEs ? 'Años en Producción' : 'Years Production'}</div>
             </div>
             <div className="p-3 text-center border-r border-cyber-border/40 last:border-none">
-              <div className="font-mono text-2xl font-bold text-cyber-accent">v7.0.0</div>
-              <div className="text-xs text-cyber-muted">{isEs ? 'Autor MCP Polyglot' : 'MCP Polyglot Author'}</div>
+              <div className="font-mono text-2xl font-bold text-cyber-accent">53</div>
+              <div className="text-xs text-cyber-muted">{isEs ? 'Herramientas AST' : 'Polyglot AST Tools'}</div>
             </div>
             <div className="p-3 text-center border-r border-cyber-border/40 last:border-none">
               <div className="font-mono text-2xl font-bold text-cyber-emerald">12</div>

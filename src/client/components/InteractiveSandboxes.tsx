@@ -15,7 +15,7 @@ export function InteractiveSandboxes({ lang, onOpenHireModal }: InteractiveSandb
   // CLI state
   const [cliInput, setCliInput] = useState('')
   const [cliLogs, setCliLogs] = useState<string[]>([
-    'mcp-code-context v7.0.0 Enterprise initialized on Cloudflare edge.',
+    'mcp-code-context Enterprise Polyglot AST initialized on Cloudflare edge.',
     'Type "help" to view available commands, or "hire" to contact Alejandro.',
   ])
 
@@ -53,7 +53,7 @@ export function InteractiveSandboxes({ lang, onOpenHireModal }: InteractiveSandb
     } else if (cmd === 'skills') {
       newLogs.push('Skills: truth-first, codex-grade-coding, frontend-motion-wizard, deep-research-team, code-reviewer...')
     } else if (cmd === 'mcp') {
-      newLogs.push('mcp-code-context: v7.0.0 Enterprise Polyglot. Run: npx -y mcp-code-context@latest')
+      newLogs.push('mcp-code-context: Enterprise Polyglot AST. Run: npx -y mcp-code-context@latest')
     } else if (cmd === 'whoami') {
       newLogs.push('Alejandro Chataing Avila — Senior Full-Stack Engineer & AI Systems Lead')
     } else if (cmd === 'hire') {

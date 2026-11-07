@@ -57,7 +57,7 @@ npx wrangler dev
 |:---|:---|:---|
 | `/api/chat` | POST | Streaming Gemini AI assistant with automated lead qualification |
 | `/api/leads` | POST | Records qualified client inquiries and dispatches WhatsApp alert |
-| `/api/skills` | GET | Catalog of `mcp-code-context` v7.0.0 and 12 Agent Skills |
+| `/api/skills` | GET | Catalog of `mcp-code-context` (Enterprise Polyglot) and 12 Agent Skills |
 | `/api/skills/:id/download` | POST | Tracks CLI install copies and raw markdown downloads |
 | `/api/blog` | GET | Returns published technical engineering articles |
 | `/api/blog/:slug` | GET | Returns article markdown and increments view counter |

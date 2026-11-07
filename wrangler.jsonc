@@ -1,16 +1,11 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "alejandro-chataing-dev",
-  "main": "src/server/index.ts",
+  "name": "alejandro-chataing",
+  "pages_build_output_dir": "dist",
   "compatibility_date": "2025-03-07",
   "compatibility_flags": [
     "nodejs_compat"
   ],
-  "assets": {
-    "directory": "./dist",
-    "not_found_handling": "single-page-application",
-    "binding": "ASSETS"
-  },
   "d1_databases": [
     {
       "binding": "DB",
@@ -27,9 +22,5 @@
     "EVOLUTION_INSTANCE": "alejandro",
     "ADMIN_EMAIL": "chataing.alejandro@gmail.com",
     "ADMIN_SECRET": "REDACTED_ADMIN_SECRET"
-  },
-  "observability": {
-    "enabled": true,
-    "head_sampling_rate": 1
   }
 }

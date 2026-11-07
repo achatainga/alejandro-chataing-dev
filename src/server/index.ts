@@ -8,7 +8,7 @@ import { analyticsRoute } from './routes/analytics.route'
 import { blogRoute } from './routes/blog.route'
 import { adminRoute } from './routes/admin.route'
 
-const app = new Hono<{ Bindings: Env }>()
+export const app = new Hono<{ Bindings: Env }>()
 
 // Global CORS middleware
 app.use(

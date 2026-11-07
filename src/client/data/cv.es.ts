@@ -9,7 +9,7 @@ export const cvSpanish: CVData = {
   github: 'achatainga',
   linkedin: 'alejandro-chataing-81798a106',
   summary:
-    'Ingeniero de Sistemas Senior con más de 10 años diseñando plataformas de alta concurrencia en producción: marketplaces e-commerce, APIs de analítica blockchain y flujos autónomos con agentes de IA. Autor de mcp-code-context (Enterprise Polyglot AST en NPM) y creador de la suite de 12 herramientas MCP y guardarraíles adversariales para agentes de IA (PortLock, BurnGuard, LoopBreaker, OMNI-MAXIMUS, SecretCloak). Especialista en arquitectura serverless con Cloudflare Workers, PHP 8.3 Puro con estándares Zero-Framework (DT24 v4.0), React 19, Laravel y Flutter. Comunicador bilingüe en inglés C2 y español nativo.',
+    'Ingeniero Full-Stack Senior con más de 10 años de experiencia desarrollando aplicaciones web, APIs y soluciones prácticas con inteligencia artificial. Autor de la librería mcp-code-context en NPM y de herramientas de código abierto utilizadas por miles de desarrolladores. Especializado en React, Node.js, PHP/Laravel y arquitecturas en la nube sobre Cloudflare. Fluidez nativa en español e inglés bilingüe nivel C2 (ex docente y traductor oficial).',
   experience: [
     {
       company: 'Detodo24.com',
@@ -81,15 +81,15 @@ export const cvSpanish: CVData = {
     {
       name: 'mcp-code-context Pro',
       description:
-        'Servidor MCP de código abierto insignia (Enterprise Polyglot AST) — lectura, edición y búsqueda quirúrgica basada en AST con Tree-sitter WASM para agentes de IA. Cero dependencias nativas, 15 parsers, confirmación de diffs en 2 fases, caché SQLite persistente y 85% de ahorro en tokens.',
-      tech: ['TypeScript', 'Node.js', 'Tree-sitter WASM', 'Protocolo MCP', 'SQLite', 'AST'],
+        'Herramienta de código abierto para desarrolladores que permite a asistentes como Cursor y Claude Code entender proyectos grandes y modificar código con precisión, ahorrando hasta un 85% de tokens de IA.',
+      tech: ['TypeScript', 'Node.js', 'Tree-sitter WASM', 'Protocolo MCP', 'SQLite'],
       url: 'https://www.npmjs.com/package/mcp-code-context',
       highlight: true,
     },
     {
       name: 'Bedrock CLI',
       description:
-        'Herramienta CLI universal para DevOps y gestión avanzada de proyectos Roots Bedrock WordPress. Incorpora clonado automático de staging/producción en 1-clic con ingress Auto-SSL, streaming de base de datos remoto vía SSH con verificación criptográfica, proxy transparente de medios (zero-disk), enlaces simbólicos NTFS/POSIX y diagnósticos del sistema (`bedrock doctor`).',
+        'Herramienta de línea de comandos para automatizar el clonado, despliegue y administración de sitios WordPress con Docker, certificados SSL automáticos y transferencias seguras por SSH.',
       tech: ['PHP 8.3', 'Symfony Console', 'Docker', 'SSH Streaming', 'Roots Bedrock', 'Nginx TLS'],
       url: 'https://github.com/achatainga/bedrock-cli',
       highlight: true,
@@ -97,7 +97,7 @@ export const cvSpanish: CVData = {
     {
       name: 'Edge AI Orchestrator',
       description:
-        'Plataforma multi-inquilino en Cloudflare Workers con Durable Objects, base de datos D1 e integración de WhatsApp Evolution API para orquestar agentes de citas y atención empresarial.',
+        'Plataforma en la nube para conectar asistentes virtuales inteligentes a WhatsApp y sitios web, automatizando la atención al cliente y el agendamiento de citas para empresas.',
       tech: ['Cloudflare Workers', 'Hono', 'Durable Objects', 'D1 SQL', 'WhatsApp', 'Gemini'],
       url: 'https://github.com/achatainga/edge-ai-orchestrator',
       highlight: true,
@@ -105,27 +105,27 @@ export const cvSpanish: CVData = {
     {
       name: 'Edge AI Video Engine',
       description:
-        'Motor autónomo de renderizado y composición de video vertical con FFmpeg, Edge-TTS, sincronización musical con Librosa y despacho automático a WhatsApp.',
+        'Motor automatizado para crear y editar videos verticales con narración de voz sintetizada, música sincronizada y envío directo a WhatsApp.',
       tech: ['FastAPI', 'Python', 'FFmpeg', 'Edge-TTS', 'Librosa', 'Evolution API'],
       url: 'https://github.com/achatainga/edge-ai-video-engine',
     },
     {
       name: 'Settleflow',
       description:
-        'Motor de liquidaciones e-commerce de alta concurrencia con WhatsApp Baileys, bloqueos distribuidos Redlock y auditoría contable en tiempo real.',
+        'Sistema de conciliación de pagos y liquidaciones para comercio electrónico con alertas por WhatsApp y balance contable en tiempo real.',
       tech: ['Node.js', 'TypeScript', 'D1', 'WhatsApp API', 'Redlock'],
     },
     {
       name: 'Victory Homes PWA',
       description:
-        'Sistema administrativo bimoneda (USD/VES/USDT) para equipos de ventas en campo — React PWA con backend serverless en Cloudflare Workers y D1.',
+        'Aplicación web móvil multi-moneda (USD/VES) para equipos de ventas inmobiliarias con base de datos en la nube y funcionamiento sin servidor.',
       tech: ['React PWA', 'Cloudflare Workers', 'D1 SQL', 'Tailwind CSS', 'TypeScript'],
       url: 'https://github.com/achatainga/victory-homes',
     },
     {
       name: 'dt24-home-engine & dt24-product-wizard',
       description:
-        'Plugins de WordPress en producción que impulsan el marketplace DeTodo24 bajo el estándar DT24 Core v4.0 (PHP 8.3 Puro Zero-Framework). UIs React Admin, APIs REST y guardarraíles SRE de límites físicos.',
+        'Plugins para WordPress que gestionan el catálogo, panel de vendedores y sincronización del marketplace DeTodo24 con interfaces modernas en React.',
       tech: ['PHP 8.3 Puro', 'WordPress', 'React 19', 'REST API', 'MySQL'],
     },
   ],

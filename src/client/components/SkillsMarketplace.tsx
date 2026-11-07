@@ -16,10 +16,10 @@ export function SkillsMarketplace({ lang }: SkillsMarketplaceProps) {
   const [copiedPromptId, setCopiedPromptId] = useState<string | null>(null)
 
   const categories = [
-    { id: 'all', label: isEs ? 'Todas las Herramientas (12)' : 'All Agent Tools (12)' },
-    { id: 'mcp', label: isEs ? 'Servidores MCP' : 'MCP Servers' },
-    { id: 'sre-verification', label: isEs ? 'SRE & Guardarraíles' : 'SRE & Guardrails' },
-    { id: 'coding-standards', label: isEs ? 'AST & Contratos' : 'AST & Contracts' },
+    { id: 'all', label: isEs ? 'Todas las Herramientas (12)' : 'All Tools (12)' },
+    { id: 'mcp', label: isEs ? 'Herramientas MCP' : 'MCP Tools' },
+    { id: 'sre-verification', label: isEs ? 'Seguridad y Estabilidad' : 'Security & Stability' },
+    { id: 'coding-standards', label: isEs ? 'Calidad de Código' : 'Code Quality' },
   ]
 
   const filteredSkills = selectedCategory === 'all'
@@ -62,15 +62,15 @@ export function SkillsMarketplace({ lang }: SkillsMarketplaceProps) {
         <div className="text-center max-w-3xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyber-accent/10 border border-cyber-accent/20 text-cyber-accent text-xs font-mono uppercase tracking-wider mb-4">
             <Sparkles size={12} />
-            <span>{isEs ? 'Librería Abierta de Skills & MCP' : 'Open-Source Skills & MCP Hub'}</span>
+            <span>{isEs ? 'Herramientas de Código Abierto' : 'Open-Source AI Tools'}</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
-            {isEs ? 'Showcase & Descarga de Herramientas para Agentes' : 'Agent Skills Showcase & Free Download Hub'}
+            {isEs ? 'Herramientas y Skills Gratuitas para Desarrolladores' : 'Free Developer Tools & Agent Skills'}
           </h2>
           <p className="text-cyber-muted text-sm sm:text-base">
             {isEs
-              ? 'Herramientas de código abierto y servidores MCP creados por Alejandro para potenciar a Cursor, Windsurf, Antigravity y Claude Code con 85% de ahorro en tokens.'
-              : 'Production-ready Agent Skills and MCP servers built by Alejandro to empower Cursor, Windsurf, Antigravity, and Claude Code with up to 85% context savings.'}
+              ? 'Librerías y comandos que he creado para ayudar a la IA (en Cursor, Claude o Antigravity) a entender proyectos grandes, cometer menos errores y ahorrar tokens.'
+              : 'Open-source packages and workflow skills built by Alejandro to help AI assistants (in Cursor, Claude, or Antigravity) understand large codebases and save up to 85% in context tokens.'}
           </p>
         </div>
 

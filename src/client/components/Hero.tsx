@@ -42,15 +42,23 @@ export function Hero({ lang, onOpenHireModal, onOpenCVModal, onOpenAdmin }: Hero
     }
   }
 
-  const techBadges = [
-    'Cloudflare Workers & D1',
-    'Tree-sitter WASM AST',
-    'React 19 & Vite',
-    'PHP 8.3 Zero-Framework',
-    'Laravel Enterprise APIs',
-    'Flutter & Mobile Sync',
-    'Multi-Agent SRE Pipelines',
-  ]
+  const techBadges = isEs
+    ? [
+        'React 19 & TypeScript',
+        'Node.js & Cloudflare Edge',
+        'PHP 8.3 & Laravel',
+        'Bases de Datos SQL & D1',
+        'Asistentes de IA & WhatsApp',
+        'Herramientas para Código (MCP)',
+      ]
+    : [
+        'React 19 & TypeScript',
+        'Node.js & Cloudflare Edge',
+        'PHP 8.3 & Laravel',
+        'SQL Databases & D1',
+        'AI Agents & WhatsApp',
+        'Developer Tools (MCP)',
+      ]
 
   return (
     <section className="relative pt-28 pb-20 md:pt-36 md:pb-28 overflow-hidden">
@@ -108,11 +116,17 @@ export function Hero({ lang, onOpenHireModal, onOpenCVModal, onOpenAdmin }: Hero
           >
             {isEs ? (
               <>
-                Sistemas de Alta Concurrencia, <span className="bg-gradient-to-r from-cyber-primary via-cyan-300 to-cyber-accent bg-clip-text text-transparent">Cirugía AST</span> & Agentes de IA
+                Desarrollo Full-Stack &{' '}
+                <span className="bg-gradient-to-r from-cyber-primary via-cyan-300 to-cyber-accent bg-clip-text text-transparent">
+                  Soluciones con Inteligencia Artificial
+                </span>
               </>
             ) : (
               <>
-                Architecting High-Concurrency Systems, <span className="bg-gradient-to-r from-cyber-primary via-cyan-300 to-cyber-accent bg-clip-text text-transparent">Surgical AST</span> & Edge AI
+                Senior Full-Stack Developer &{' '}
+                <span className="bg-gradient-to-r from-cyber-primary via-cyan-300 to-cyber-accent bg-clip-text text-transparent">
+                  Practical AI Solutions
+                </span>
               </>
             )}
           </motion.h1>
@@ -125,8 +139,8 @@ export function Hero({ lang, onOpenHireModal, onOpenCVModal, onOpenAdmin }: Hero
             className="text-base sm:text-lg text-cyber-muted leading-relaxed max-w-2xl mx-auto mb-7"
           >
             {isEs
-              ? 'Senior Full-Stack Engineer con 10+ años en producción. Autor de mcp-code-context (Enterprise Polyglot AST en NPM) y 12 skills de agentes. Experto en Cloudflare Edge, PHP 8.3 Zero-Framework, React 19 y SaaS de IA multicanal.'
-              : 'Senior Full-Stack Engineer with 10+ years building production platforms. Author of mcp-code-context (Enterprise Polyglot AST on NPM) and 12 published agent skills. Specialist in Cloudflare Edge, Pure PHP 8.3 zero-framework, React 19, and turnkey AI SaaS.'}
+              ? 'Ayudo a startups y empresas a construir aplicaciones web rápidas, APIs confiables y asistentes de IA prácticos para atención y ventas. Más de 10 años creando software que funciona en el mundo real.'
+              : 'I help startups and businesses build fast web applications, scalable backends, and practical AI agents for customer support and sales. 10+ years of production experience.'}
           </motion.p>
 
           {/* Action CTAs */}
@@ -203,15 +217,15 @@ export function Hero({ lang, onOpenHireModal, onOpenCVModal, onOpenAdmin }: Hero
           >
             <div className="p-3 text-center border-r border-cyber-border/40 last:border-none">
               <div className="font-mono text-2xl font-bold text-cyber-primary">10+</div>
-              <div className="text-xs text-cyber-muted">{isEs ? 'Años en Producción' : 'Years Production'}</div>
+              <div className="text-xs text-cyber-muted">{isEs ? 'Años Programando' : 'Years Experience'}</div>
             </div>
             <div className="p-3 text-center border-r border-cyber-border/40 last:border-none">
-              <div className="font-mono text-2xl font-bold text-cyber-accent">53</div>
-              <div className="text-xs text-cyber-muted">{isEs ? 'Herramientas AST' : 'Polyglot AST Tools'}</div>
+              <div className="font-mono text-2xl font-bold text-cyber-accent">14k+</div>
+              <div className="text-xs text-cyber-muted">{isEs ? 'Descargas en NPM' : 'NPM Downloads'}</div>
             </div>
             <div className="p-3 text-center border-r border-cyber-border/40 last:border-none">
               <div className="font-mono text-2xl font-bold text-cyber-emerald">12</div>
-              <div className="text-xs text-cyber-muted">{isEs ? 'Skills de Agentes' : 'Published Skills'}</div>
+              <div className="text-xs text-cyber-muted">{isEs ? 'Herramientas Libres' : 'Open-Source Tools'}</div>
             </div>
             <div className="p-3 text-center">
               <div className="font-mono text-2xl font-bold text-white">C2</div>

@@ -81,15 +81,15 @@ export const cvEnglish: CVData = {
     {
       name: 'mcp-code-context Pro',
       description:
-        'Flagship open-source MCP server (Enterprise Polyglot AST) — Tree-sitter WASM AST surgical reading, editing, and search for AI agents. Zero native dependencies, 15 language parsers, 2-phase write with diff confirmation, SQLite persistent cache, Call Hierarchy, and 85% token conservation.',
-      tech: ['TypeScript', 'Node.js', 'Tree-sitter WASM', 'MCP Protocol', 'SQLite', 'AST'],
+        'Open-source developer tool that helps AI assistants like Cursor and Claude Code accurately navigate large repositories and perform surgical code edits, cutting AI token costs by up to 85%.',
+      tech: ['TypeScript', 'Node.js', 'Tree-sitter WASM', 'MCP Protocol', 'SQLite'],
       url: 'https://www.npmjs.com/package/mcp-code-context',
       highlight: true,
     },
     {
       name: 'Bedrock CLI',
       description:
-        'Universal DevOps CLI tool for Roots Bedrock WordPress ecosystems. Features 1-click autonomous staging & production cloning with Auto-SSL ingress, zero-disk transparent media proxying, SSH streaming database migrations with checksum verification, NTFS/POSIX symlink virtualization, and automated health diagnostics (`bedrock doctor`).',
+        'Command-line developer tool that automates cloning, Docker deployment, and environment synchronization for WordPress projects with automatic SSL and secure SSH streaming.',
       tech: ['PHP 8.3', 'Symfony Console', 'Docker', 'SSH Streaming', 'Roots Bedrock', 'Nginx TLS'],
       url: 'https://github.com/achatainga/bedrock-cli',
       highlight: true,
@@ -97,7 +97,7 @@ export const cvEnglish: CVData = {
     {
       name: 'Edge AI Orchestrator',
       description:
-        'Multi-tenant Cloudflare Workers platform with Durable Objects, D1 database, and Evolution API WhatsApp integration, orchestrating automated AI customer appointments and autonomous business agents.',
+        'Cloud platform connecting intelligent AI virtual assistants to WhatsApp and business websites to automate customer inquiries and appointment scheduling 24/7.',
       tech: ['Cloudflare Workers', 'Hono', 'Durable Objects', 'D1 SQL', 'WhatsApp', 'Gemini'],
       url: 'https://github.com/achatainga/edge-ai-orchestrator',
       highlight: true,
@@ -105,27 +105,27 @@ export const cvEnglish: CVData = {
     {
       name: 'Edge AI Video Engine',
       description:
-        'Autonomous vertical video rendering and cinematic assembly engine with FFmpeg, Edge-TTS, Librosa beat synchronization, and automated WhatsApp dispatch.',
+        'Automated video generation pipeline that composes vertical short-form videos with synthesized voice narration, beat-synced music, and automated delivery to WhatsApp.',
       tech: ['FastAPI', 'Python', 'FFmpeg', 'Edge-TTS', 'Librosa', 'Evolution API'],
       url: 'https://github.com/achatainga/edge-ai-video-engine',
     },
     {
       name: 'Settleflow',
       description:
-        'High-concurrency e-commerce settlement engine with WhatsApp Baileys integration, Redlock distributed locking, and real-time inventory ledger auditing.',
+        'Financial settlement and inventory reconciliation engine for e-commerce with real-time WhatsApp transaction notifications and balanced ledgers.',
       tech: ['Node.js', 'TypeScript', 'D1', 'WhatsApp API', 'Redlock'],
     },
     {
       name: 'Victory Homes PWA',
       description:
-        'Dual-currency (USD/VES/USDT) field sales administration system — React PWA powered by a serverless backend on Cloudflare Workers and D1 database.',
+        'Dual-currency mobile web application (USD/VES) for real estate sales teams with serverless cloud database storage and instant synchronization.',
       tech: ['React PWA', 'Cloudflare Workers', 'D1 SQL', 'Tailwind CSS', 'TypeScript'],
       url: 'https://github.com/achatainga/victory-homes',
     },
     {
       name: 'dt24-home-engine & dt24-product-wizard',
       description:
-        'Production WordPress plugins powering the DeTodo24 marketplace under DT24 Core Standard v4.0 (Pure PHP 8.3 Zero-Framework). Features React Admin dashboards, custom REST APIs, and strict SRE physical limit guardrails.',
+        'Production WordPress plugins powering the DeTodo24 e-commerce marketplace, featuring modern React admin interfaces and custom catalog management.',
       tech: ['Pure PHP 8.3', 'WordPress', 'React 19', 'REST API', 'MySQL'],
     },
   ],

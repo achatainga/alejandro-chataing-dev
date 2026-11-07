@@ -6,6 +6,8 @@ const LANG_STORAGE_KEY = 'alejandro_portfolio_lang'
 export function useLang() {
   const [lang, setLang] = useState<Language>(() => {
     if (typeof window === 'undefined') return 'en'
+    const urlParam = new URLSearchParams(window.location.search).get('lang')
+    if (urlParam === 'es' || urlParam === 'en') return urlParam
     const saved = localStorage.getItem(LANG_STORAGE_KEY)
     if (saved === 'es' || saved === 'en') return saved
     const browserLang = navigator.language.slice(0, 2)

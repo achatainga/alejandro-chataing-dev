@@ -80,12 +80,12 @@ export function InteractiveSandboxes({ lang, onOpenHireModal }: InteractiveSandb
             <span>{isEs ? 'Playgrounds Interactivos' : 'Interactive Developer Sandboxes'}</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-2">
-            {isEs ? 'Experimenta la Tecnología en Vivo' : 'Test the Technology in Real-Time'}
+            {isEs ? 'Demostración Interactiva en Vivo' : 'Live Interactive Demo'}
           </h2>
           <p className="text-cyber-muted text-xs sm:text-sm">
             {isEs
-              ? 'Prueba el visualizador AST de mcp-code-context o interactúa con la terminal CLI integrada.'
-              : 'Inspect the AST parser behind mcp-code-context or run commands inside the embedded terminal.'}
+              ? 'Mira cómo mcp-code-context analiza una función para que la IA la entienda sin errores, o interactúa con la terminal.'
+              : 'See how mcp-code-context inspects a function so AI can understand and edit code without errors, or try the interactive terminal.'}
           </p>
         </div>
 
@@ -101,7 +101,7 @@ export function InteractiveSandboxes({ lang, onOpenHireModal }: InteractiveSandb
             }`}
           >
             <Cpu size={14} />
-            <span>{isEs ? 'Visualizador AST Quirúrgico' : 'Surgical AST Visualizer'}</span>
+            <span>{isEs ? 'Analizador de Código (mcp-code-context)' : 'Code Analyzer (mcp-code-context)'}</span>
           </button>
 
           <button
@@ -114,7 +114,7 @@ export function InteractiveSandboxes({ lang, onOpenHireModal }: InteractiveSandb
             }`}
           >
             <Terminal size={14} />
-            <span>{isEs ? 'Simulador Terminal CLI' : 'Terminal CLI Simulator'}</span>
+            <span>{isEs ? 'Terminal Interactiva' : 'Interactive Terminal'}</span>
           </button>
         </div>
 
